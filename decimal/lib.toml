@@ -1,0 +1,9 @@
+[lib]
+name = "decimal"
+version = "0.1.0"
+entry = "src/lib.ykn"
+yukino = ["0.1.0", "+"]
+output = "static"
+
+[features]
+default = []

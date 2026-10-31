@@ -1,0 +1,40 @@
+// Деньги без float: счёт с НДС, скидкой и делением на троих.
+load decimal: Dec, Round, dec_parse, dec_add, dec_sub, dec_mul, dec_div, dec_quantize
+
+fun money(s: string) -> Dec {
+    return dec_parse(s)
+}
+
+fun main() {
+    // 1. Позиции заказа
+    set latte = money("199.99")
+    set croissant = money("89.50")
+    set subtotal = dec_add(latte, croissant)
+    print("подытог:        " + subtotal.to_text() + "\n")
+
+    // 2. Скидка 10% — умножение на 0.10
+    set discount = dec_mul(subtotal, money("0.10"))
+    set after_discount = dec_sub(subtotal, discount)
+    print("скидка 10%:     " + discount.to_text() + "\n")
+    print("после скидки:   " + after_discount.to_text() + "\n")
+
+    // 3. НДС 20%, округление до копеек по-банковски
+    set vat = dec_mul(after_discount, money("0.20")).quantize(2, Round::HalfEven)
+    set total = dec_add(after_discount, vat)
+    print("НДС 20%:        " + vat.to_text() + "\n")
+    print("итого:          " + total.to_text() + "\n")
+
+    // 4. Делим на трёх гостей — ровно до копейки, без остатка в float
+    set per_person = dec_div(total, dec_from_int(3), Round::HalfEven).quantize(2, Round::HalfEven)
+    print("на человека:    " + per_person.to_text() + "\n")
+
+    // 5. Проверка: 0.1 + 0.2 действительно 0.3
+    set tenth = dec_parse("0.1")
+    set fifth = dec_parse("0.2")
+    set s = dec_add(tenth, fifth)
+    print("0.1 + 0.2 =     " + s.to_text() + "\n")
+
+    // 6. Где float врёт: 1.005 → 1.00 (half-even), а не 1.01 и не 1.00499999
+    set tricky = dec_parse("1.005").quantize(2, Round::HalfEven)
+    print("1.005 @2:       " + tricky.to_text() + "\n")
+}

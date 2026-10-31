@@ -1,0 +1,6 @@
+// Точка входа пакета decimal. Реэкспорт публичного API.
+public load .decimal: Round, DecError, Dec,
+    dec_raw, dec_from_int, dec_parse, dec_try_parse,
+    dec_add, dec_sub, dec_add_fit, dec_sub_fit,
+    dec_mul, dec_mul_with, dec_mul_exact,
+    dec_div, dec_quantize, dec_compare

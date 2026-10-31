@@ -1,0 +1,223 @@
+// Тесты std.decimal. Запуск: yukino test
+load decimal: Dec, Round, DecError,
+    dec_from_int, dec_parse, dec_try_parse,
+    dec_add, dec_sub, dec_add_fit,
+    dec_mul, dec_mul_with, dec_mul_exact,
+    dec_div, dec_quantize, dec_compare
+
+fun d(s: string) -> Dec {
+    return dec_parse(s)
+}
+
+// ---------------------------------------------------------------- деньги
+
+#[test]
+fun test_float_trap() {
+    // Главный тест: во float 0.1 + 0.2 = 0.30000000000000004
+    set s = dec_add(d("0.1"), d("0.2"))
+    assert_eq(s.to_text(), "0.3")
+    assert(s.to_text() != "0.30000000000000004")
+}
+
+#[test]
+fun test_sum_with_cents() {
+    assert_eq(dec_add(d("19.99"), d("0.01")).to_text(), "20.00")
+    assert_eq(dec_add(d("19.99"), d("89.50")).to_text(), "109.49")
+}
+
+#[test]
+fun test_sub_with_cents() {
+    assert_eq(dec_sub(d("1.00"), d("0.99")).to_text(), "0.01")
+    assert_eq(dec_sub(d("0.00"), d("0.01")).to_text(), "-0.01")
+}
+
+#[test]
+fun test_mul_price_by_qty() {
+    assert_eq(dec_mul(d("19.99"), d("3")).to_text(), "59.97")
+    assert_eq(dec_mul(d("10.00"), d("0.20")).to_text(), "2.0000")
+}
+
+#[test]
+fun test_vat_rounding() {
+    // 19.99 * 0.20 = 3.998 → до копеек 4.00 по любому режиму половины
+    set vat = dec_mul(d("19.99"), d("0.20")).quantize(2, Round::HalfEven)
+    assert_eq(vat.to_text(), "4.00")
+}
+
+// ---------------------------------------------------------------- округление
+
+#[test]
+fun test_half_even_bankers() {
+    assert_eq(dec_quantize(d("2.5"), 0, Round::HalfEven).to_text(), "2")
+    assert_eq(dec_quantize(d("3.5"), 0, Round::HalfEven).to_text(), "4")
+    assert_eq(dec_quantize(d("1.5"), 0, Round::HalfEven).to_text(), "2")
+    assert_eq(dec_quantize(d("-2.5"), 0, Round::HalfEven).to_text(), "-2")
+}
+
+#[test]
+fun test_half_up_vs_half_even() {
+    // 1.005 — ровно половина: half-even даёт 1.00, half-up даёт 1.01
+    assert_eq(dec_quantize(d("1.005"), 2, Round::HalfEven).to_text(), "1.00")
+    assert_eq(dec_quantize(d("1.005"), 2, Round::HalfUp).to_text(), "1.01")
+}
+
+#[test]
+fun test_directed_modes() {
+    assert_eq(dec_quantize(d("-1.5"), 0, Round::Down).to_text(), "-1")
+    assert_eq(dec_quantize(d("-1.5"), 0, Round::Up).to_text(), "-2")
+    assert_eq(dec_quantize(d("1.4"), 0, Round::Ceiling).to_text(), "2")
+    assert_eq(dec_quantize(d("-1.4"), 0, Round::Floor).to_text(), "-2")
+    assert_eq(dec_quantize(d("19.66"), 0, Round::Floor).to_text(), "19")
+}
+
+// ---------------------------------------------------------------- деление
+
+#[test]
+fun test_div_simple() {
+    assert_eq(dec_div(d("10.00"), d("4"), Round::HalfEven).to_text(), "2.500000000")
+    assert_eq(dec_div(d("60.00"), d("3"), Round::HalfEven).to_text(), "20.000000000")
+}
+
+#[test]
+fun test_div_thirds() {
+    set third = dec_div(d("1"), d("3"), Round::HalfEven)
+    assert_eq(third.to_text(), "0.333333333")
+    set two_thirds = dec_div(d("2"), d("3"), Round::HalfEven)
+    assert_eq(two_thirds.to_text(), "0.666666667")
+}
+
+#[test]
+fun test_div_by_zero() {
+    set caught = ""
+    sus {
+        set ignored = dec_div(d("1"), d("0"), Round::HalfEven)
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_DIV_BY_ZERO")
+}
+
+// ---------------------------------------------------------------- парсинг и формат
+
+#[test]
+fun test_parse_keeps_scale() {
+    assert_eq(d("1.2300").to_text(), "1.2300")
+    assert_eq(d("1.5e3").to_text(), "1500")
+    assert_eq(d("1.5e-3").to_text(), "0.0015")
+    assert_eq(d("-0.00").to_text(), "0.00")
+    assert_eq(d("+7").to_text(), "7")
+    assert_eq(d("0000123.4500").to_text(), "123.4500")
+}
+
+#[test]
+fun test_parse_comma_rejected() {
+    set caught = ""
+    sus {
+        set ignored = dec_parse("1,5")
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PARSE")
+}
+
+#[test]
+fun test_parse_two_points_rejected() {
+    set caught = ""
+    sus {
+        set ignored = dec_parse("1.2.3")
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PARSE")
+}
+
+#[test]
+fun test_parse_empty_rejected() {
+    set caught = ""
+    sus {
+        set ignored = dec_parse("")
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PARSE")
+}
+
+#[test]
+fun test_try_parse_soft() {
+    set ok = dec_try_parse("12.50")
+    assert(ok != null)
+    set bad = dec_try_parse("12,50")
+    assert(bad == null)
+}
+
+// ---------------------------------------------------------------- сравнение
+
+#[test]
+fun test_compare_across_scales() {
+    assert(dec_compare(d("1.5"), d("1.50")) == 0)
+    assert(dec_compare(d("0.3"), d("0.30")) == 0)
+    assert(dec_compare(d("0.1"), d("0.2")) < 0)
+    assert(dec_compare(d("2"), d("1.999")) > 0)
+}
+
+#[test]
+fun test_eq_operator() {
+    assert(d("1.5") == d("1.50"))
+    assert(d("1.5") != d("1.51"))
+    assert(d("0.1") + d("0.2") == d("0.3"))
+}
+
+// ---------------------------------------------------------------- нормализация
+
+#[test]
+fun test_normalize() {
+    assert_eq(d("1.2300").normalize().to_text(), "1.23")
+    assert_eq(d("0.000").normalize().to_text(), "0")
+    assert_eq(d("100").normalize().to_text(), "100")
+}
+
+// ---------------------------------------------------------------- ошибки и границы
+
+#[test]
+fun test_scale_overflow() {
+    set caught = ""
+    sus {
+        set ignored = dec_parse("0.0000000001")
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PRECISION")
+}
+
+#[test]
+fun test_mul_overflow() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul(d("9999999999"), d("9999999999"))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun test_max_coef_roundtrip() {
+    set m = d("9223372036854775807")
+    assert_eq(m.to_text(), "9223372036854775807")
+    assert(m.scale_value() == 0)
+}
+
+#[test]
+fun test_add_overflow_panics() {
+    set r = sus_expect_overflow()
+    assert(r)
+}
+
+fun sus_expect_overflow() -> bool {
+    sus {
+        dec_add(d("9223372036854775807"), d("1"))
+    } catch {
+        return true
+    }
+    return false
+}

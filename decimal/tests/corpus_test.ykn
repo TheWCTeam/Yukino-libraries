@@ -1,0 +1,6629 @@
+// ФАЙЛ СГЕНЕРИРОВАН: python gen_ykn_tests.py — руками не править.
+//
+// 920 тестов из корпуса vectors/ (профиль int64).
+// Каждый кейс независимо проверен оракулом на Python и прогнан через
+// зеркало алгоритма из src/decimal.ykn. Запуск: yukino test
+load decimal: Dec, Round, DecError,
+    dec_raw, dec_parse,
+    dec_add, dec_sub, dec_add_fit, dec_sub_fit,
+    dec_mul, dec_mul_with, dec_mul_exact,
+    dec_div, dec_quantize, dec_compare
+
+#[test]
+fun c_add_00000() {
+    set r = dec_add(dec_raw(134, 0), dec_raw(-242, 0))
+    assert_eq(r.to_text(), "-108")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_add_00001() {
+    set r = dec_add(dec_raw(1947951159643598615, 2), dec_raw(51574700, 0))
+    assert_eq(r.to_text(), "19479511648010686.15")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_add_00002() {
+    set r = dec_add(dec_raw(5979670000, 0), dec_raw(-772065226845, 0))
+    assert_eq(r.to_text(), "-766085556845")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_add_00003() {
+    set r = dec_add(dec_raw(389, 0), dec_raw(-797810868328, 8))
+    assert_eq(r.to_text(), "-7589.10868328")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_add_00004() {
+    set r = dec_add(dec_raw(0, 1), dec_raw(-796489555120, 8))
+    assert_eq(r.to_text(), "-7964.89555120")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_add_00005() {
+    set r = dec_add(dec_raw(441068000000, 3), dec_raw(0, 2))
+    assert_eq(r.to_text(), "441068000.000")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_add_00006() {
+    set r = dec_add(dec_raw(-6581774080066817360, 4), dec_raw(-525, 3))
+    assert_eq(r.to_text(), "-658177408006682.2610")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_add_00007() {
+    set r = dec_add(dec_raw(939096000, 0), dec_raw(0, 9))
+    assert_eq(r.to_text(), "939096000.000000000")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_add_00008() {
+    set r = dec_add(dec_raw(1, 3), dec_raw(-2630204998281436152, 9))
+    assert_eq(r.to_text(), "-2630204998.280436152")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_add_00009() {
+    set r = dec_add(dec_raw(802574344663, 8), dec_raw(224970302493, 8))
+    assert_eq(r.to_text(), "10275.44647156")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_add_00010() {
+    set r = dec_add(dec_raw(-980, 2), dec_raw(-809271078916, 2))
+    assert_eq(r.to_text(), "-8092710798.96")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_add_00011() {
+    set r = dec_add(dec_raw(-156687749583, 0), dec_raw(995147870925, 4))
+    assert_eq(r.to_text(), "-156588234795.9075")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_add_00012() {
+    set r = dec_add(dec_raw(-639, 1), dec_raw(-896998185381280621, 1))
+    assert_eq(r.to_text(), "-89699818538128126.0")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_add_00013() {
+    set caught = ""
+    sus {
+        set ignored = dec_add(dec_raw(-928509252788, 8), dec_raw(-9137004482868329493, 2))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_add_00014() {
+    set r = dec_add(dec_raw(813, 0), dec_raw(-638381163902, 0))
+    assert_eq(r.to_text(), "-638381163089")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_add_00015() {
+    set r = dec_add(dec_raw(34351808487766334, 3), dec_raw(-4, 0))
+    assert_eq(r.to_text(), "34351808487762.334")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_add_00016() {
+    set r = dec_add(dec_raw(5639110000, 4), dec_raw(-167225653650, 8))
+    assert_eq(r.to_text(), "562238.74346350")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_add_00017() {
+    set r = dec_add(dec_raw(0, 4), dec_raw(-645, 0))
+    assert_eq(r.to_text(), "-645.0000")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_add_00018() {
+    set r = dec_add(dec_raw(274464901326, 9), dec_raw(-25, 9))
+    assert_eq(r.to_text(), "274.464901301")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_add_00019() {
+    set caught = ""
+    sus {
+        set ignored = dec_add(dec_raw(739523318499, 0), dec_raw(1, 9))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_add_00020() {
+    set r = dec_add(dec_raw(49, 3), dec_raw(457480051954378069, 3))
+    assert_eq(r.to_text(), "457480051954378.118")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_add_00021() {
+    set r = dec_add(dec_raw(4125560, 9), dec_raw(134, 9))
+    assert_eq(r.to_text(), "0.004125694")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_add_00022() {
+    set r = dec_add(dec_raw(-5, 3), dec_raw(-877485429313, 3))
+    assert_eq(r.to_text(), "-877485429.318")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_add_00023() {
+    set r = dec_add(dec_raw(896, 4), dec_raw(58, 4))
+    assert_eq(r.to_text(), "0.0954")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_add_00024() {
+    set r = dec_add(dec_raw(-846, 4), dec_raw(-429730494569, 8))
+    assert_eq(r.to_text(), "-4297.38954569")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_add_00025() {
+    set r = dec_add(dec_raw(-5585870711, 2), dec_raw(38057206221249523, 2))
+    assert_eq(r.to_text(), "380572006353788.12")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_add_00026() {
+    set r = dec_add(dec_raw(130, 8), dec_raw(-113, 8))
+    assert_eq(r.to_text(), "0.00000017")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_add_00027() {
+    set r = dec_add(dec_raw(0, 9), dec_raw(-69, 1))
+    assert_eq(r.to_text(), "-6.900000000")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_add_00028() {
+    set r = dec_add(dec_raw(92729000000, 9), dec_raw(140711000, 2))
+    assert_eq(r.to_text(), "1407202.729000000")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_add_00029() {
+    set r = dec_add(dec_raw(292505868537, 8), dec_raw(335614873572111670, 8))
+    assert_eq(r.to_text(), "3356151660.77980207")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_add_00030() {
+    set r = dec_add(dec_raw(338, 9), dec_raw(-1, 9))
+    assert_eq(r.to_text(), "0.000000337")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_add_00031() {
+    set r = dec_add(dec_raw(-289, 3), dec_raw(581852000000, 0))
+    assert_eq(r.to_text(), "581851999999.711")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_add_00032() {
+    set r = dec_add(dec_raw(68, 0), dec_raw(4187359485697493939, 0))
+    assert_eq(r.to_text(), "4187359485697494007")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_add_00033() {
+    set r = dec_add(dec_raw(-442648821809, 1), dec_raw(-921, 1))
+    assert_eq(r.to_text(), "-44264882273.0")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_add_00034() {
+    set r = dec_add(dec_raw(-70260525041, 3), dec_raw(-628931500277, 0))
+    assert_eq(r.to_text(), "-629001760802.041")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_add_00035() {
+    set r = dec_add(dec_raw(3993990000, 1), dec_raw(71342500, 1))
+    assert_eq(r.to_text(), "406533250.0")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_add_00036() {
+    set r = dec_add(dec_raw(5714260928881336987, 0), dec_raw(-880558216737, 0))
+    assert_eq(r.to_text(), "5714260048323120250")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_add_00037() {
+    set r = dec_add(dec_raw(0, 2), dec_raw(-383034982653, 1))
+    assert_eq(r.to_text(), "-38303498265.30")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_add_00038() {
+    set r = dec_add(dec_raw(-30992486891, 2), dec_raw(-497, 2))
+    assert_eq(r.to_text(), "-309924873.88")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_add_00039() {
+    set r = dec_add(dec_raw(614638474660957444, 2), dec_raw(447, 0))
+    assert_eq(r.to_text(), "6146384746610021.44")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_add_00040() {
+    set r = dec_add(dec_raw(-704571127466, 1), dec_raw(646, 1))
+    assert_eq(r.to_text(), "-70457112682.0")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_add_00041() {
+    set r = dec_add(dec_raw(-658122948312, 2), dec_raw(734, 2))
+    assert_eq(r.to_text(), "-6581229475.78")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_add_00042() {
+    set r = dec_add(dec_raw(-877548071982, 0), dec_raw(-1, 0))
+    assert_eq(r.to_text(), "-877548071983")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_add_00043() {
+    set r = dec_add(dec_raw(-920, 1), dec_raw(0, 0))
+    assert_eq(r.to_text(), "-92.0")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_add_00044() {
+    set caught = ""
+    sus {
+        set ignored = dec_add(dec_raw(15761357325228673, 0), dec_raw(345908839761, 4))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_add_00045() {
+    set r = dec_add(dec_raw(-780859763846, 2), dec_raw(545, 2))
+    assert_eq(r.to_text(), "-7808597633.01")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_add_00046() {
+    set r = dec_add(dec_raw(3450540, 0), dec_raw(-7182696097337039360, 0))
+    assert_eq(r.to_text(), "-7182696097333588820")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_add_00047() {
+    set r = dec_add(dec_raw(601972369344, 2), dec_raw(51968300, 1))
+    assert_eq(r.to_text(), "6024920523.44")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_add_00048() {
+    set r = dec_add(dec_raw(928433125251, 2), dec_raw(-410, 3))
+    assert_eq(r.to_text(), "9284331252.100")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_add_00049() {
+    set r = dec_add(dec_raw(-786, 2), dec_raw(317, 2))
+    assert_eq(r.to_text(), "-4.69")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_add_00050() {
+    set r = dec_add(dec_raw(313, 8), dec_raw(-938, 8))
+    assert_eq(r.to_text(), "-0.00000625")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_add_00051() {
+    set r = dec_add(dec_raw(0, 0), dec_raw(-14, 0))
+    assert_eq(r.to_text(), "-14")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_add_00052() {
+    set r = dec_add(dec_raw(37747100, 9), dec_raw(-56, 9))
+    assert_eq(r.to_text(), "0.037747044")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_add_00053() {
+    set r = dec_add(dec_raw(-993901572050, 9), dec_raw(268, 3))
+    assert_eq(r.to_text(), "-993.633572050")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_add_00054() {
+    set r = dec_add(dec_raw(-25, 1), dec_raw(-552, 1))
+    assert_eq(r.to_text(), "-57.7")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_add_00055() {
+    set r = dec_add(dec_raw(-751, 0), dec_raw(1240330, 2))
+    assert_eq(r.to_text(), "11652.30")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_add_00056() {
+    set r = dec_add(dec_raw(415211835205, 2), dec_raw(-684, 2))
+    assert_eq(r.to_text(), "4152118345.21")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_add_00057() {
+    set r = dec_add(dec_raw(1534309057716886033, 0), dec_raw(5, 0))
+    assert_eq(r.to_text(), "1534309057716886038")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_add_00058() {
+    set r = dec_add(dec_raw(-138967572321, 0), dec_raw(41538700, 0))
+    assert_eq(r.to_text(), "-138926033621")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_add_00059() {
+    set r = dec_add(dec_raw(-289, 0), dec_raw(850, 0))
+    assert_eq(r.to_text(), "561")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_add_fit_00000() {
+    set r = dec_add_fit(dec_raw(1, 1), dec_raw(-713, 9), Round::Down)
+    assert_eq(r.to_text(), "0.099999287")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_add_fit_00001() {
+    set r = dec_add_fit(dec_raw(5764000000, 9), dec_raw(587, 2), Round::HalfDown)
+    assert_eq(r.to_text(), "11.634000000")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_add_fit_00002() {
+    set r = dec_add_fit(dec_raw(169674539156, 0), dec_raw(57978700000, 0), Round::Down)
+    assert_eq(r.to_text(), "227653239156")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_add_fit_00003() {
+    set r = dec_add_fit(dec_raw(40, 0), dec_raw(922, 0), Round::HalfUp)
+    assert_eq(r.to_text(), "962")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_add_fit_00004() {
+    set r = dec_add_fit(dec_raw(579895881286, 1), dec_raw(256, 1), Round::Floor)
+    assert_eq(r.to_text(), "57989588154.2")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_add_fit_00005() {
+    set r = dec_add_fit(dec_raw(-75555755265835915, 8), dec_raw(111987550408, 2), Round::Floor)
+    assert_eq(r.to_text(), "364317951.42164085")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_add_fit_00006() {
+    set r = dec_add_fit(dec_raw(-885854816091, 3), dec_raw(0, 3), Round::Floor)
+    assert_eq(r.to_text(), "-885854816.091")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_add_fit_00008() {
+    set r = dec_add_fit(dec_raw(6725020, 0), dec_raw(47214100, 0), Round::HalfUp)
+    assert_eq(r.to_text(), "53939120")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_add_fit_00009() {
+    set r = dec_add_fit(dec_raw(370, 0), dec_raw(25671838226847574, 2), Round::Floor)
+    assert_eq(r.to_text(), "256718382268845.74")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_add_fit_00010() {
+    set r = dec_add_fit(dec_raw(280982000, 3), dec_raw(-957844591673, 8), Round::HalfUp)
+    assert_eq(r.to_text(), "271403.55408327")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_add_fit_00011() {
+    set r = dec_add_fit(dec_raw(-786066186112, 3), dec_raw(624, 3), Round::Up)
+    assert_eq(r.to_text(), "-786066185.488")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_add_fit_00012() {
+    set r = dec_add_fit(dec_raw(235042518127, 2), dec_raw(0, 2), Round::Floor)
+    assert_eq(r.to_text(), "2350425181.27")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_add_fit_00013() {
+    set r = dec_add_fit(dec_raw(580, 0), dec_raw(-551, 0), Round::Down)
+    assert_eq(r.to_text(), "29")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_add_fit_00014() {
+    set r = dec_add_fit(dec_raw(-313623969059, 9), dec_raw(965, 3), Round::Down)
+    assert_eq(r.to_text(), "-312.658969059")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_add_fit_00015() {
+    set r = dec_add_fit(dec_raw(749, 0), dec_raw(-1708055700537195576, 3), Round::HalfUp)
+    assert_eq(r.to_text(), "-1708055700536446.576")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_add_fit_00016() {
+    set r = dec_add_fit(dec_raw(589, 2), dec_raw(-170881700003, 2), Round::HalfDown)
+    assert_eq(r.to_text(), "-1708816994.14")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_add_fit_00017() {
+    set r = dec_add_fit(dec_raw(-85653306186707251, 2), dec_raw(5, 2), Round::Ceiling)
+    assert_eq(r.to_text(), "-856533061867072.46")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_add_fit_00018() {
+    set r = dec_add_fit(dec_raw(-812, 1), dec_raw(0, 8), Round::HalfUp)
+    assert_eq(r.to_text(), "-81.20000000")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_add_fit_00019() {
+    set r = dec_add_fit(dec_raw(100, 1), dec_raw(732, 1), Round::Down)
+    assert_eq(r.to_text(), "83.2")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_add_fit_00020() {
+    set r = dec_add_fit(dec_raw(-201, 2), dec_raw(281587367472, 2), Round::HalfDown)
+    assert_eq(r.to_text(), "2815873672.71")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_add_fit_00021() {
+    set r = dec_add_fit(dec_raw(-795782758560, 8), dec_raw(1, 0), Round::Down)
+    assert_eq(r.to_text(), "-7956.82758560")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_add_fit_00023() {
+    set r = dec_add_fit(dec_raw(1, 8), dec_raw(379648387820, 9), Round::Down)
+    assert_eq(r.to_text(), "379.648387830")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_add_fit_00024() {
+    set r = dec_add_fit(dec_raw(-387933580240, 9), dec_raw(509153774159, 9), Round::HalfDown)
+    assert_eq(r.to_text(), "121.220193919")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_add_fit_00025() {
+    set r = dec_add_fit(dec_raw(-771, 4), dec_raw(-19590643955692204, 8), Round::Up)
+    assert_eq(r.to_text(), "-195906439.63402204")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_add_fit_00026() {
+    set r = dec_add_fit(dec_raw(30186959820213040, 2), dec_raw(-873090503983, 3), Round::Up)
+    assert_eq(r.to_text(), "301868725111626.417")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_add_fit_00027() {
+    set r = dec_add_fit(dec_raw(-490971687157, 3), dec_raw(-961795459307, 3), Round::Down)
+    assert_eq(r.to_text(), "-1452767146.464")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_add_fit_00028() {
+    set r = dec_add_fit(dec_raw(117851122844181923, 1), dec_raw(-254808076790, 1), Round::HalfEven)
+    assert_eq(r.to_text(), "11785086803610513.3")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_add_fit_00029() {
+    set r = dec_add_fit(dec_raw(93, 3), dec_raw(-5, 3), Round::Ceiling)
+    assert_eq(r.to_text(), "0.088")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_add_fit_00030() {
+    set r = dec_add_fit(dec_raw(860, 8), dec_raw(46, 3), Round::Down)
+    assert_eq(r.to_text(), "0.04600860")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_add_fit_00031() {
+    set r = dec_add_fit(dec_raw(677, 9), dec_raw(-796, 9), Round::HalfDown)
+    assert_eq(r.to_text(), "-0.000000119")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_add_fit_00032() {
+    set r = dec_add_fit(dec_raw(67159644341090768, 4), dec_raw(931, 4), Round::HalfEven)
+    assert_eq(r.to_text(), "6715964434109.1699")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_add_fit_00034() {
+    set r = dec_add_fit(dec_raw(-259, 4), dec_raw(-14989284320, 8), Round::HalfDown)
+    assert_eq(r.to_text(), "-149.91874320")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_add_fit_00035() {
+    set r = dec_add_fit(dec_raw(-332, 0), dec_raw(1, 9), Round::HalfDown)
+    assert_eq(r.to_text(), "-331.999999999")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_add_fit_00036() {
+    set r = dec_add_fit(dec_raw(0, 4), dec_raw(8780358113693277228, 4), Round::Down)
+    assert_eq(r.to_text(), "878035811369327.7228")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_add_fit_00037() {
+    set r = dec_add_fit(dec_raw(797, 2), dec_raw(5, 2), Round::HalfDown)
+    assert_eq(r.to_text(), "8.02")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_add_fit_00038() {
+    set r = dec_add_fit(dec_raw(0, 8), dec_raw(885004555782, 8), Round::Floor)
+    assert_eq(r.to_text(), "8850.04555782")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_add_fit_00039() {
+    set r = dec_add_fit(dec_raw(966, 8), dec_raw(-397081653150003741, 8), Round::HalfUp)
+    assert_eq(r.to_text(), "-3970816531.50002775")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_add_fit_00040() {
+    set r = dec_add_fit(dec_raw(15924623897014719, 2), dec_raw(0, 2), Round::HalfUp)
+    assert_eq(r.to_text(), "159246238970147.19")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_add_fit_00041() {
+    set r = dec_add_fit(dec_raw(-503, 2), dec_raw(-624, 2), Round::HalfUp)
+    assert_eq(r.to_text(), "-11.27")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_add_fit_00042() {
+    set r = dec_add_fit(dec_raw(113, 0), dec_raw(-5, 0), Round::Floor)
+    assert_eq(r.to_text(), "108")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_add_fit_00043() {
+    set r = dec_add_fit(dec_raw(688407000000, 4), dec_raw(-143112549215, 0), Round::HalfUp)
+    assert_eq(r.to_text(), "-143043708515.0000")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_add_fit_00044() {
+    set r = dec_add_fit(dec_raw(716371691177, 4), dec_raw(-152, 2), Round::HalfEven)
+    assert_eq(r.to_text(), "71637167.5977")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_add_fit_00045() {
+    set r = dec_add_fit(dec_raw(-131496620331098430, 0), dec_raw(91, 0), Round::Down)
+    assert_eq(r.to_text(), "-131496620331098339")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_add_fit_00046() {
+    set r = dec_add_fit(dec_raw(850, 3), dec_raw(1, 2), Round::Down)
+    assert_eq(r.to_text(), "0.860")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_add_fit_00047() {
+    set r = dec_add_fit(dec_raw(71035300000, 0), dec_raw(204466773716, 1), Round::Floor)
+    assert_eq(r.to_text(), "91481977371.6")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_add_fit_00048() {
+    set r = dec_add_fit(dec_raw(416343000000, 0), dec_raw(-396, 3), Round::Floor)
+    assert_eq(r.to_text(), "416342999999.604")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_add_fit_00049() {
+    set r = dec_add_fit(dec_raw(-235832083298, 9), dec_raw(-794568531384, 9), Round::Down)
+    assert_eq(r.to_text(), "-1030.400614682")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_add_fit_00050() {
+    set r = dec_add_fit(dec_raw(-26, 9), dec_raw(759416000, 2), Round::Ceiling)
+    assert_eq(r.to_text(), "7594159.999999974")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_add_fit_00051() {
+    set r = dec_add_fit(dec_raw(-116570343012, 3), dec_raw(-11, 3), Round::Up)
+    assert_eq(r.to_text(), "-116570343.023")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_add_fit_00052() {
+    set r = dec_add_fit(dec_raw(79134155009342717, 0), dec_raw(-448, 0), Round::HalfUp)
+    assert_eq(r.to_text(), "79134155009342269")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_add_fit_00053() {
+    set r = dec_add_fit(dec_raw(4779887537506065376, 2), dec_raw(37493084382368823, 2), Round::Up)
+    assert_eq(r.to_text(), "48173806218884341.99")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_add_fit_00054() {
+    set r = dec_add_fit(dec_raw(-854, 0), dec_raw(7441350792501378077, 9), Round::HalfDown)
+    assert_eq(r.to_text(), "7441349938.501378077")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_add_fit_00055() {
+    set r = dec_add_fit(dec_raw(0, 4), dec_raw(252, 4), Round::HalfDown)
+    assert_eq(r.to_text(), "0.0252")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_add_fit_00056() {
+    set r = dec_add_fit(dec_raw(271431523069, 3), dec_raw(935240800481, 3), Round::HalfUp)
+    assert_eq(r.to_text(), "1206672323.550")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_add_fit_00057() {
+    set r = dec_add_fit(dec_raw(0, 2), dec_raw(191, 2), Round::Up)
+    assert_eq(r.to_text(), "1.91")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_add_fit_00058() {
+    set r = dec_add_fit(dec_raw(31347030338340933, 2), dec_raw(0, 1), Round::Ceiling)
+    assert_eq(r.to_text(), "313470303383409.33")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_add_fit_00059() {
+    set r = dec_add_fit(dec_raw(-319, 1), dec_raw(-389, 8), Round::Floor)
+    assert_eq(r.to_text(), "-31.90000389")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_add_fit_00060() {
+    set r = dec_add_fit(dec_raw(-18998712774735774, 0), dec_raw(125689660748, 0), Round::Ceiling)
+    assert_eq(r.to_text(), "-18998587085075026")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_add_fit_00061() {
+    set r = dec_add_fit(dec_raw(933176243584297351, 2), dec_raw(413978000, 2), Round::HalfUp)
+    assert_eq(r.to_text(), "9331762439982753.51")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_add_fit_00062() {
+    set r = dec_add_fit(dec_raw(-112891613015326521, 0), dec_raw(69225491428, 0), Round::HalfEven)
+    assert_eq(r.to_text(), "-112891543789835093")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_compare_00000() {
+    assert_eq(dec_compare(dec_raw(15, 1), dec_raw(150, 2)), 0)
+}
+
+#[test]
+fun c_compare_00001() {
+    assert_eq(dec_compare(dec_raw(-15, 1), dec_raw(-150, 2)), 0)
+}
+
+#[test]
+fun c_compare_00002() {
+    assert_eq(dec_compare(dec_raw(0, 0), dec_raw(0, 5)), 0)
+}
+
+#[test]
+fun c_compare_00004() {
+    assert_eq(dec_compare(dec_raw(1, 9), dec_raw(0, 0)), 1)
+}
+
+#[test]
+fun c_compare_00005() {
+    assert_eq(dec_compare(dec_raw(-643, 2), dec_raw(-643, 4)), -1)
+}
+
+#[test]
+fun c_compare_00006() {
+    assert_eq(dec_compare(dec_raw(0, 0), dec_raw(544659431026128883, 2)), -1)
+}
+
+#[test]
+fun c_compare_00007() {
+    assert_eq(dec_compare(dec_raw(-3852460116335530431, 2), dec_raw(655519550498, 0)), -1)
+}
+
+#[test]
+fun c_compare_00008() {
+    assert_eq(dec_compare(dec_raw(25511000000, 1), dec_raw(-127, 0)), 1)
+}
+
+#[test]
+fun c_compare_00009() {
+    assert_eq(dec_compare(dec_raw(0, 1), dec_raw(-496, 4)), 1)
+}
+
+#[test]
+fun c_compare_00010() {
+    assert_eq(dec_compare(dec_raw(430, 0), dec_raw(470015860025, 9)), -1)
+}
+
+#[test]
+fun c_compare_00011() {
+    assert_eq(dec_compare(dec_raw(865397535357, 2), dec_raw(357134000000, 0)), -1)
+}
+
+#[test]
+fun c_compare_00012() {
+    assert_eq(dec_compare(dec_raw(65363406679, 9), dec_raw(744651847180565214, 9)), -1)
+}
+
+#[test]
+fun c_compare_00013() {
+    assert_eq(dec_compare(dec_raw(91, 3), dec_raw(11117223530866725, 1)), -1)
+}
+
+#[test]
+fun c_compare_00014() {
+    assert_eq(dec_compare(dec_raw(-283, 2), dec_raw(-949, 4)), -1)
+}
+
+#[test]
+fun c_compare_00015() {
+    assert_eq(dec_compare(dec_raw(-5, 3), dec_raw(200, 8)), -1)
+}
+
+#[test]
+fun c_compare_00016() {
+    assert_eq(dec_compare(dec_raw(-770918016762, 0), dec_raw(686901153255, 4)), -1)
+}
+
+#[test]
+fun c_compare_00017() {
+    assert_eq(dec_compare(dec_raw(862, 0), dec_raw(6580794493630164934, 8)), -1)
+}
+
+#[test]
+fun c_compare_00018() {
+    assert_eq(dec_compare(dec_raw(-742, 2), dec_raw(5, 8)), -1)
+}
+
+#[test]
+fun c_compare_00019() {
+    assert_eq(dec_compare(dec_raw(-5, 0), dec_raw(374075000, 0)), -1)
+}
+
+#[test]
+fun c_compare_00020() {
+    assert_eq(dec_compare(dec_raw(8519670000, 4), dec_raw(974, 2)), 1)
+}
+
+#[test]
+fun c_compare_00021() {
+    assert_eq(dec_compare(dec_raw(5, 2), dec_raw(0, 0)), 1)
+}
+
+#[test]
+fun c_compare_00022() {
+    assert_eq(dec_compare(dec_raw(877, 1), dec_raw(87700, 4)), 1)
+}
+
+#[test]
+fun c_compare_00023() {
+    assert_eq(dec_compare(dec_raw(0, 9), dec_raw(-1, 1)), 1)
+}
+
+#[test]
+fun c_compare_00024() {
+    assert_eq(dec_compare(dec_raw(-155, 1), dec_raw(-517302777724, 9)), 1)
+}
+
+#[test]
+fun c_compare_00025() {
+    assert_eq(dec_compare(dec_raw(-71005368304493123, 9), dec_raw(-71005368304493123, 9)), 0)
+}
+
+#[test]
+fun c_compare_00026() {
+    assert_eq(dec_compare(dec_raw(-112455877961, 4), dec_raw(857, 1)), -1)
+}
+
+#[test]
+fun c_compare_00027() {
+    assert_eq(dec_compare(dec_raw(970911649023, 1), dec_raw(-641, 3)), 1)
+}
+
+#[test]
+fun c_compare_00028() {
+    assert_eq(dec_compare(dec_raw(809716963033, 9), dec_raw(809716963033, 9)), 0)
+}
+
+#[test]
+fun c_compare_00029() {
+    assert_eq(dec_compare(dec_raw(940, 2), dec_raw(519, 1)), -1)
+}
+
+#[test]
+fun c_compare_00030() {
+    assert_eq(dec_compare(dec_raw(-626, 3), dec_raw(-626000, 4)), 1)
+}
+
+#[test]
+fun c_compare_00031() {
+    assert_eq(dec_compare(dec_raw(283, 1), dec_raw(177, 0)), -1)
+}
+
+#[test]
+fun c_compare_00032() {
+    assert_eq(dec_compare(dec_raw(609916000, 2), dec_raw(609916000000, 5)), 0)
+}
+
+#[test]
+fun c_compare_00033() {
+    assert_eq(dec_compare(dec_raw(442, 1), dec_raw(0, 8)), 1)
+}
+
+#[test]
+fun c_compare_00034() {
+    assert_eq(dec_compare(dec_raw(-837, 0), dec_raw(643, 2)), -1)
+}
+
+#[test]
+fun c_compare_00035() {
+    assert_eq(dec_compare(dec_raw(-889, 2), dec_raw(-124, 8)), -1)
+}
+
+#[test]
+fun c_compare_00036() {
+    assert_eq(dec_compare(dec_raw(24136451778976735, 8), dec_raw(191784332822, 8)), 1)
+}
+
+#[test]
+fun c_compare_00037() {
+    assert_eq(dec_compare(dec_raw(59980590432, 2), dec_raw(59980590432, 3)), 1)
+}
+
+#[test]
+fun c_compare_00038() {
+    assert_eq(dec_compare(dec_raw(9725010000, 0), dec_raw(25, 4)), 1)
+}
+
+#[test]
+fun c_compare_00039() {
+    assert_eq(dec_compare(dec_raw(833, 9), dec_raw(9020840, 3)), -1)
+}
+
+#[test]
+fun c_compare_00040() {
+    assert_eq(dec_compare(dec_raw(360904072142, 8), dec_raw(0, 8)), 1)
+}
+
+#[test]
+fun c_compare_00041() {
+    assert_eq(dec_compare(dec_raw(238, 2), dec_raw(2380, 2)), -1)
+}
+
+#[test]
+fun c_compare_00042() {
+    assert_eq(dec_compare(dec_raw(269, 3), dec_raw(2690, 5)), 1)
+}
+
+#[test]
+fun c_compare_00043() {
+    assert_eq(dec_compare(dec_raw(814435000000, 4), dec_raw(508194481900, 2)), -1)
+}
+
+#[test]
+fun c_compare_00044() {
+    assert_eq(dec_compare(dec_raw(2563330, 1), dec_raw(533, 3)), 1)
+}
+
+#[test]
+fun c_compare_00045() {
+    assert_eq(dec_compare(dec_raw(-910, 0), dec_raw(-9100, 0)), 1)
+}
+
+#[test]
+fun c_compare_00046() {
+    assert_eq(dec_compare(dec_raw(-380146194800, 1), dec_raw(-380146194800, 1)), 0)
+}
+
+#[test]
+fun c_compare_00047() {
+    assert_eq(dec_compare(dec_raw(-142, 8), dec_raw(937, 9)), -1)
+}
+
+#[test]
+fun c_compare_00048() {
+    assert_eq(dec_compare(dec_raw(574, 0), dec_raw(14463255630081234, 3)), -1)
+}
+
+#[test]
+fun c_compare_00049() {
+    assert_eq(dec_compare(dec_raw(758, 9), dec_raw(95283800000, 3)), -1)
+}
+
+#[test]
+fun c_compare_00050() {
+    assert_eq(dec_compare(dec_raw(576407000000, 3), dec_raw(-94, 1)), 1)
+}
+
+#[test]
+fun c_compare_00052() {
+    assert_eq(dec_compare(dec_raw(-5, 8), dec_raw(594028378672, 2)), -1)
+}
+
+#[test]
+fun c_compare_00053() {
+    assert_eq(dec_compare(dec_raw(712304019483, 0), dec_raw(-440, 2)), 1)
+}
+
+#[test]
+fun c_compare_00054() {
+    assert_eq(dec_compare(dec_raw(455, 2), dec_raw(455, 3)), 1)
+}
+
+#[test]
+fun c_compare_00055() {
+    assert_eq(dec_compare(dec_raw(-639, 9), dec_raw(9697680, 9)), -1)
+}
+
+#[test]
+fun c_compare_00056() {
+    assert_eq(dec_compare(dec_raw(140, 4), dec_raw(21758300000, 9)), -1)
+}
+
+#[test]
+fun c_compare_00057() {
+    assert_eq(dec_compare(dec_raw(329174829924, 0), dec_raw(13630300, 0)), 1)
+}
+
+#[test]
+fun c_compare_00058() {
+    assert_eq(dec_compare(dec_raw(-871, 8), dec_raw(835418000000, 8)), -1)
+}
+
+#[test]
+fun c_compare_00059() {
+    assert_eq(dec_compare(dec_raw(190028000, 2), dec_raw(1900280000, 3)), 0)
+}
+
+#[test]
+fun c_compare_00060() {
+    assert_eq(dec_compare(dec_raw(-88210462529661144, 3), dec_raw(-88210462529661144, 5)), -1)
+}
+
+#[test]
+fun c_compare_00061() {
+    assert_eq(dec_compare(dec_raw(669608528445, 3), dec_raw(-68859382958291156, 4)), 1)
+}
+
+#[test]
+fun c_div_00000() {
+    set r = dec_div(dec_raw(1, 0), dec_raw(3, 0), Round::HalfEven)
+    assert_eq(r.to_text(), "0.333333333")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_div_00001() {
+    set r = dec_div(dec_raw(2, 0), dec_raw(3, 0), Round::HalfEven)
+    assert_eq(r.to_text(), "0.666666667")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_div_00002() {
+    set r = dec_div(dec_raw(10, 0), dec_raw(4, 0), Round::HalfEven)
+    assert_eq(r.to_text(), "2.500000000")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_div_00003() {
+    set caught = ""
+    sus {
+        set ignored = dec_div(dec_raw(1, 0), dec_raw(0, 0), Round::HalfEven)
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_DIV_BY_ZERO")
+}
+
+#[test]
+fun c_div_00004() {
+    set r = dec_div(dec_raw(0, 5), dec_raw(7, 2), Round::HalfEven)
+    assert_eq(r.to_text(), "0")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_div_00005() {
+    set r = dec_div(dec_raw(1, 2), dec_raw(3, 0), Round::Up)
+    assert_eq(r.to_text(), "0.003333334")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_div_00006() {
+    set r = dec_div(dec_raw(-1, 2), dec_raw(3, 0), Round::Floor)
+    assert_eq(r.to_text(), "-0.003333334")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_div_00007() {
+    set r = dec_div(dec_raw(1, 0), dec_raw(8, 0), Round::HalfEven)
+    assert_eq(r.to_text(), "0.125000000")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_div_00008() {
+    set r = dec_div(dec_raw(22, 0), dec_raw(7, 0), Round::HalfEven)
+    assert_eq(r.to_text(), "3.142857143")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_div_00009() {
+    set r = dec_div(dec_raw(9223372036854775807, 0), dec_raw(1, 0), Round::HalfEven)
+    assert_eq(r.to_text(), "9223372036854775807")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_div_00011() {
+    set r = dec_div(dec_raw(1, 0), dec_raw(100000000000000000, 0), Round::HalfEven)
+    assert_eq(r.to_text(), "0.000000000")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_div_00012() {
+    set caught = ""
+    sus {
+        set ignored = dec_div(dec_raw(647425913496482098, 1), dec_raw(-349, 9), Round::Down)
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_div_00014() {
+    set r = dec_div(dec_raw(832, 1), dec_raw(234, 0), Round::Floor)
+    assert_eq(r.to_text(), "0.355555555")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_div_00016() {
+    set r = dec_div(dec_raw(-5, 0), dec_raw(96227095, 0), Round::Down)
+    assert_eq(r.to_text(), "-0.000000051")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_div_00017() {
+    set caught = ""
+    sus {
+        set ignored = dec_div(dec_raw(968514168037, 3), dec_raw(0, 9), Round::Up)
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_DIV_BY_ZERO")
+}
+
+#[test]
+fun c_div_00018() {
+    set caught = ""
+    sus {
+        set ignored = dec_div(dec_raw(2425573424525888864, 2), dec_raw(298, 9), Round::Down)
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_div_00020() {
+    set caught = ""
+    sus {
+        set ignored = dec_div(dec_raw(-369701609690211945, 2), dec_raw(-432, 9), Round::Down)
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_div_00021() {
+    set r = dec_div(dec_raw(-893, 2), dec_raw(995, 4), Round::HalfDown)
+    assert_eq(r.to_text(), "-89.748743719")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_div_00022() {
+    set r = dec_div(dec_raw(632, 3), dec_raw(915, 1), Round::Floor)
+    assert_eq(r.to_text(), "0.006907103")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_div_00023() {
+    set r = dec_div(dec_raw(899, 3), dec_raw(773, 0), Round::Up)
+    assert_eq(r.to_text(), "0.001163002")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_div_00024() {
+    set caught = ""
+    sus {
+        set ignored = dec_div(dec_raw(-341, 3), dec_raw(0, 1), Round::Down)
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_DIV_BY_ZERO")
+}
+
+#[test]
+fun c_div_00025() {
+    set r = dec_div(dec_raw(521, 3), dec_raw(637, 9), Round::Up)
+    assert_eq(r.to_text(), "817896.389324961")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_div_00027() {
+    set caught = ""
+    sus {
+        set ignored = dec_div(dec_raw(-88325561108193351, 1), dec_raw(0, 2), Round::HalfDown)
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_DIV_BY_ZERO")
+}
+
+#[test]
+fun c_div_00029() {
+    set r = dec_div(dec_raw(-1, 2), dec_raw(213, 4), Round::Floor)
+    assert_eq(r.to_text(), "-0.469483569")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_div_00030() {
+    set r = dec_div(dec_raw(783, 3), dec_raw(102, 9), Round::Down)
+    assert_eq(r.to_text(), "7676470.588235294")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_div_00032() {
+    set r = dec_div(dec_raw(-716945759204, 8), dec_raw(449324649, 2), Round::Ceiling)
+    assert_eq(r.to_text(), "-0.001595607")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_div_00034() {
+    set r = dec_div(dec_raw(559, 2), dec_raw(459316088, 9), Round::Down)
+    assert_eq(r.to_text(), "12.170268244")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_div_00035() {
+    set r = dec_div(dec_raw(0, 4), dec_raw(-384, 1), Round::Up)
+    assert_eq(r.to_text(), "0")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_div_00038() {
+    set r = dec_div(dec_raw(360, 9), dec_raw(-358, 9), Round::HalfDown)
+    assert_eq(r.to_text(), "-1.005586592")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_div_00039() {
+    set r = dec_div(dec_raw(-765717881431, 8), dec_raw(665, 2), Round::HalfDown)
+    assert_eq(r.to_text(), "-1151.455460798")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_div_00040() {
+    set r = dec_div(dec_raw(3045870000, 8), dec_raw(45, 1), Round::HalfUp)
+    assert_eq(r.to_text(), "6.768600000")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_div_00041() {
+    set r = dec_div(dec_raw(196, 9), dec_raw(611410073, 9), Round::HalfUp)
+    assert_eq(r.to_text(), "0.000000321")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_div_00042() {
+    set r = dec_div(dec_raw(-463, 0), dec_raw(-792, 1), Round::HalfDown)
+    assert_eq(r.to_text(), "5.845959596")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_div_00043() {
+    set r = dec_div(dec_raw(1584720000, 2), dec_raw(-449, 2), Round::Up)
+    assert_eq(r.to_text(), "-3529443.207126949")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_div_00044() {
+    set r = dec_div(dec_raw(3904450, 4), dec_raw(-345, 0), Round::Down)
+    assert_eq(r.to_text(), "-1.131724637")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_div_00046() {
+    set r = dec_div(dec_raw(-539797648887, 4), dec_raw(613470313, 1), Round::HalfDown)
+    assert_eq(r.to_text(), "-0.879908347")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_div_00047() {
+    set r = dec_div(dec_raw(124748000, 2), dec_raw(278, 0), Round::HalfDown)
+    assert_eq(r.to_text(), "4487.338129496")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_div_00050() {
+    set r = dec_div(dec_raw(979294228804, 8), dec_raw(22, 1), Round::Down)
+    assert_eq(r.to_text(), "4451.337403654")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_div_00052() {
+    set caught = ""
+    sus {
+        set ignored = dec_div(dec_raw(799142000, 2), dec_raw(0, 0), Round::Down)
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_DIV_BY_ZERO")
+}
+
+#[test]
+fun c_div_00054() {
+    set r = dec_div(dec_raw(-427, 3), dec_raw(110, 0), Round::HalfEven)
+    assert_eq(r.to_text(), "-0.003881818")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_div_00055() {
+    set r = dec_div(dec_raw(524, 2), dec_raw(-526, 0), Round::HalfDown)
+    assert_eq(r.to_text(), "-0.009961977")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_div_00056() {
+    set r = dec_div(dec_raw(-575, 0), dec_raw(-612, 1), Round::Floor)
+    assert_eq(r.to_text(), "9.395424836")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_div_00057() {
+    set r = dec_div(dec_raw(946, 8), dec_raw(65, 4), Round::HalfEven)
+    assert_eq(r.to_text(), "0.001455385")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_div_00059() {
+    set r = dec_div(dec_raw(-109, 9), dec_raw(394, 0), Round::Up)
+    assert_eq(r.to_text(), "-0.000000001")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_div_00061() {
+    set r = dec_div(dec_raw(684334581075, 4), dec_raw(474, 1), Round::Down)
+    assert_eq(r.to_text(), "1443743.841930379")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_div_00063() {
+    set caught = ""
+    sus {
+        set ignored = dec_div(dec_raw(-802092443727, 0), dec_raw(0, 9), Round::Floor)
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_DIV_BY_ZERO")
+}
+
+#[test]
+fun c_div_00064() {
+    set caught = ""
+    sus {
+        set ignored = dec_div(dec_raw(-562483392092733171, 3), dec_raw(-997, 9), Round::Down)
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_div_00065() {
+    set caught = ""
+    sus {
+        set ignored = dec_div(dec_raw(25, 0), dec_raw(0, 0), Round::HalfEven)
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_DIV_BY_ZERO")
+}
+
+#[test]
+fun c_div_00066() {
+    set caught = ""
+    sus {
+        set ignored = dec_div(dec_raw(-811074519278313610, 0), dec_raw(94, 9), Round::HalfUp)
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_div_00067() {
+    set r = dec_div(dec_raw(-964, 3), dec_raw(6, 0), Round::Ceiling)
+    assert_eq(r.to_text(), "-0.160666666")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_div_00068() {
+    set r = dec_div(dec_raw(-553, 0), dec_raw(435, 2), Round::Up)
+    assert_eq(r.to_text(), "-127.126436782")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_div_00069() {
+    set caught = ""
+    sus {
+        set ignored = dec_div(dec_raw(688943000000, 2), dec_raw(0, 4), Round::HalfEven)
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_DIV_BY_ZERO")
+}
+
+#[test]
+fun c_div_00070() {
+    set r = dec_div(dec_raw(1958910000, 4), dec_raw(783, 1), Round::Up)
+    assert_eq(r.to_text(), "2501.800766284")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_div_00072() {
+    set r = dec_div(dec_raw(-217, 2), dec_raw(413, 1), Round::HalfUp)
+    assert_eq(r.to_text(), "-0.052542373")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_div_00073() {
+    set r = dec_div(dec_raw(533, 0), dec_raw(240, 0), Round::HalfUp)
+    assert_eq(r.to_text(), "2.220833333")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_div_00074() {
+    set r = dec_div(dec_raw(482, 1), dec_raw(921643117, 4), Round::HalfEven)
+    assert_eq(r.to_text(), "0.000522979")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_div_00075() {
+    set r = dec_div(dec_raw(505631328465, 4), dec_raw(196, 0), Round::Floor)
+    assert_eq(r.to_text(), "257975.167584183")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_div_00076() {
+    set r = dec_div(dec_raw(-938, 1), dec_raw(625581346, 1), Round::Ceiling)
+    assert_eq(r.to_text(), "-0.000001499")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_div_00077() {
+    set r = dec_div(dec_raw(-624, 8), dec_raw(614, 9), Round::Ceiling)
+    assert_eq(r.to_text(), "-10.162866449")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_div_00079() {
+    set r = dec_div(dec_raw(-272, 1), dec_raw(655319585, 2), Round::Ceiling)
+    assert_eq(r.to_text(), "-0.000004150")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_money_00000() {
+    set r = dec_add(dec_raw(1, 1), dec_raw(2, 1))
+    assert_eq(r.to_text(), "0.3")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_money_00001() {
+    set r = dec_add(dec_raw(1999, 2), dec_raw(1, 2))
+    assert_eq(r.to_text(), "20.00")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_money_00002() {
+    set r = dec_sub(dec_raw(100, 2), dec_raw(99, 2))
+    assert_eq(r.to_text(), "0.01")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_money_00003() {
+    set r = dec_sub(dec_raw(0, 2), dec_raw(1, 2))
+    assert_eq(r.to_text(), "-0.01")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_money_00004() {
+    set r = dec_mul(dec_raw(1999, 2), dec_raw(3, 0))
+    assert_eq(r.to_text(), "59.97")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_money_00005() {
+    set r = dec_mul(dec_raw(1999, 2), dec_raw(1999, 2))
+    assert_eq(r.to_text(), "399.6001")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_money_00006() {
+    set r = dec_mul(dec_raw(1000, 2), dec_raw(20, 2))
+    assert_eq(r.to_text(), "2.0000")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_money_00007() {
+    set r = dec_div(dec_raw(10000, 2), dec_raw(3, 0), Round::HalfEven)
+    assert_eq(r.to_text(), "33.333333333")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_money_00008() {
+    set r = dec_div(dec_raw(1, 0), dec_raw(8, 0), Round::HalfEven)
+    assert_eq(r.to_text(), "0.125000000")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_money_00009() {
+    set r = dec_div(dec_raw(1, 0), dec_raw(3, 0), Round::HalfEven)
+    assert_eq(r.to_text(), "0.333333333")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_money_00010() {
+    set r = dec_quantize(dec_raw(1005, 3), 2, Round::HalfEven)
+    assert_eq(r.to_text(), "1.00")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_money_00011() {
+    set r = dec_quantize(dec_raw(1005, 3), 2, Round::HalfUp)
+    assert_eq(r.to_text(), "1.01")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_money_00012() {
+    set r = dec_quantize(dec_raw(1999, 2), 0, Round::HalfEven)
+    assert_eq(r.to_text(), "20")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_money_00013() {
+    set r = dec_quantize(dec_raw(1966, 2), 0, Round::Floor)
+    assert_eq(r.to_text(), "19")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_money_00014() {
+    set r = dec_div(dec_raw(6000, 2), dec_raw(3, 0), Round::HalfEven)
+    assert_eq(r.to_text(), "20.000000000")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_money_00015() {
+    set r = dec_add_fit(dec_raw(1, 1), dec_raw(2, 1), Round::HalfEven)
+    assert_eq(r.to_text(), "0.3")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_money_00016() {
+    set r = dec_raw(3000, 4).normalize()
+    assert_eq(r.to_text(), "0.3")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_money_00017() {
+    assert_eq(dec_compare(dec_raw(3, 1), dec_raw(30, 2)), 0)
+}
+
+#[test]
+fun c_money_00018() {
+    assert_eq(dec_compare(dec_raw(1, 1), dec_raw(2, 1)), -1)
+}
+
+#[test]
+fun c_money_00019() {
+    assert_eq(dec_raw(1999, 2).to_text(), "19.99")
+}
+
+#[test]
+fun c_mul_00001() {
+    set r = dec_mul(dec_raw(18794200, 3), dec_raw(731, 3))
+    assert_eq(r.to_text(), "13738.560200")
+    assert_eq(r.scale_value(), 6)
+}
+
+#[test]
+fun c_mul_00003() {
+    set r = dec_mul(dec_raw(-167, 2), dec_raw(765463000000, 2))
+    assert_eq(r.to_text(), "-12783232100.0000")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_mul_00005() {
+    set r = dec_mul(dec_raw(0, 9), dec_raw(69471079812810170, 0))
+    assert_eq(r.to_text(), "0.000000000")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_mul_00007() {
+    set r = dec_mul(dec_raw(509287000000, 1), dec_raw(-187, 1))
+    assert_eq(r.to_text(), "-952366690000.00")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_mul_00008() {
+    set r = dec_mul(dec_raw(254, 9), dec_raw(999422445016, 9))
+    assert_eq(r.to_text(), "0.000253853")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_mul_00009() {
+    set r = dec_mul(dec_raw(-515291557899, 2), dec_raw(-248, 2))
+    assert_eq(r.to_text(), "12779230635.8952")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_mul_00010() {
+    set r = dec_mul(dec_raw(0, 3), dec_raw(-198968524562, 0))
+    assert_eq(r.to_text(), "0.000")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_mul_00011() {
+    set r = dec_mul(dec_raw(-815695375798, 2), dec_raw(-587, 1))
+    assert_eq(r.to_text(), "478813185593.426")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_mul_00013() {
+    set r = dec_mul(dec_raw(0, 2), dec_raw(718355424998, 2))
+    assert_eq(r.to_text(), "0.0000")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_mul_00014() {
+    set r = dec_mul(dec_raw(740067997719, 1), dec_raw(649, 1))
+    assert_eq(r.to_text(), "4803041305196.31")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_mul_00015() {
+    set r = dec_mul(dec_raw(-557, 0), dec_raw(1, 0))
+    assert_eq(r.to_text(), "-557")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_mul_00017() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul(dec_raw(-5551302269726485361, 0), dec_raw(7540730, 0))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_mul_00018() {
+    set r = dec_mul(dec_raw(731921062689, 0), dec_raw(-213, 0))
+    assert_eq(r.to_text(), "-155899186352757")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_mul_00019() {
+    set r = dec_mul(dec_raw(-832, 2), dec_raw(272, 2))
+    assert_eq(r.to_text(), "-22.6304")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_mul_00020() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul(dec_raw(967529119846095475, 2), dec_raw(-527988303644, 3))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_mul_00021() {
+    set r = dec_mul(dec_raw(764, 2), dec_raw(-245, 2))
+    assert_eq(r.to_text(), "-18.7180")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_mul_00022() {
+    set r = dec_mul(dec_raw(-686, 0), dec_raw(-289310053065, 1))
+    assert_eq(r.to_text(), "19846669640259.0")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_mul_00023() {
+    set r = dec_mul(dec_raw(-922595032330, 8), dec_raw(-614, 8))
+    assert_eq(r.to_text(), "0.056647335")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_mul_00024() {
+    set r = dec_mul(dec_raw(286480343046, 2), dec_raw(1, 3))
+    assert_eq(r.to_text(), "2864803.43046")
+    assert_eq(r.scale_value(), 5)
+}
+
+#[test]
+fun c_mul_00026() {
+    set r = dec_mul(dec_raw(0, 3), dec_raw(626, 3))
+    assert_eq(r.to_text(), "0.000000")
+    assert_eq(r.scale_value(), 6)
+}
+
+#[test]
+fun c_mul_00027() {
+    set r = dec_mul(dec_raw(0, 0), dec_raw(-668362737507, 0))
+    assert_eq(r.to_text(), "0")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_mul_00028() {
+    set r = dec_mul(dec_raw(5, 4), dec_raw(-453072889923, 2))
+    assert_eq(r.to_text(), "-2265364.449615")
+    assert_eq(r.scale_value(), 6)
+}
+
+#[test]
+fun c_mul_00029() {
+    set r = dec_mul(dec_raw(54, 0), dec_raw(535, 3))
+    assert_eq(r.to_text(), "28.890")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_mul_00031() {
+    set r = dec_mul(dec_raw(-644173823205, 8), dec_raw(677, 3))
+    assert_eq(r.to_text(), "-4361.056783098")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_mul_00032() {
+    set r = dec_mul(dec_raw(-520, 2), dec_raw(895, 2))
+    assert_eq(r.to_text(), "-46.5400")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_mul_00033() {
+    set r = dec_mul(dec_raw(711, 1), dec_raw(689, 1))
+    assert_eq(r.to_text(), "4898.79")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_mul_00035() {
+    set r = dec_mul(dec_raw(-736729686644, 2), dec_raw(388, 2))
+    assert_eq(r.to_text(), "-28585111841.7872")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_mul_00036() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul(dec_raw(171873746160, 3), dec_raw(888699150316, 1))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_mul_00038() {
+    set r = dec_mul(dec_raw(-393221732327, 8), dec_raw(617, 1))
+    assert_eq(r.to_text(), "-242617.808845759")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_mul_00039() {
+    set r = dec_mul(dec_raw(502, 2), dec_raw(-425436330983, 2))
+    assert_eq(r.to_text(), "-21356903815.3466")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_mul_00040() {
+    set r = dec_mul(dec_raw(0, 2), dec_raw(620, 4))
+    assert_eq(r.to_text(), "0.000000")
+    assert_eq(r.scale_value(), 6)
+}
+
+#[test]
+fun c_mul_00041() {
+    set r = dec_mul(dec_raw(609058870410927581, 2), dec_raw(1, 2))
+    assert_eq(r.to_text(), "60905887041092.7581")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_mul_00042() {
+    set r = dec_mul(dec_raw(0, 2), dec_raw(-198, 2))
+    assert_eq(r.to_text(), "0.0000")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_mul_00044() {
+    set r = dec_mul(dec_raw(-419, 4), dec_raw(871738932720, 4))
+    assert_eq(r.to_text(), "-3652586.12809680")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_mul_00045() {
+    set r = dec_mul(dec_raw(687, 0), dec_raw(743889546434, 2))
+    assert_eq(r.to_text(), "5110521184001.58")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_mul_00046() {
+    set r = dec_mul(dec_raw(160760282766781881, 3), dec_raw(0, 3))
+    assert_eq(r.to_text(), "0.000000")
+    assert_eq(r.scale_value(), 6)
+}
+
+#[test]
+fun c_mul_00047() {
+    set r = dec_mul(dec_raw(-213, 3), dec_raw(413416875471, 2))
+    assert_eq(r.to_text(), "-880577944.75323")
+    assert_eq(r.scale_value(), 5)
+}
+
+#[test]
+fun c_mul_00049() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul(dec_raw(-68032274411581077, 2), dec_raw(534535826472, 2))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_mul_00050() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul(dec_raw(-257939437937, 0), dec_raw(-629280705066, 0))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_mul_00051() {
+    set r = dec_mul(dec_raw(25, 4), dec_raw(-86608889385460631, 9))
+    assert_eq(r.to_text(), "-216522.223463652")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_mul_00052() {
+    set r = dec_mul(dec_raw(576695000000, 0), dec_raw(657, 0))
+    assert_eq(r.to_text(), "378888615000000")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_mul_00053() {
+    set r = dec_mul(dec_raw(-605, 0), dec_raw(693, 0))
+    assert_eq(r.to_text(), "-419265")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_mul_00054() {
+    set r = dec_mul(dec_raw(20580500000, 2), dec_raw(-107, 2))
+    assert_eq(r.to_text(), "-220211350.0000")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_mul_00055() {
+    set r = dec_mul(dec_raw(-966427243094, 9), dec_raw(945, 2))
+    assert_eq(r.to_text(), "-9132.737447238")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_mul_00056() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul(dec_raw(87641455969, 2), dec_raw(-6678297141717107824, 0))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_mul_00057() {
+    set r = dec_mul(dec_raw(854, 4), dec_raw(-456, 4))
+    assert_eq(r.to_text(), "-0.00389424")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_mul_00058() {
+    set r = dec_mul(dec_raw(0, 0), dec_raw(-470307945858, 0))
+    assert_eq(r.to_text(), "0")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_mul_00062() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul(dec_raw(897858296088, 0), dec_raw(337335216735, 0))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_mul_00063() {
+    set r = dec_mul(dec_raw(-661824379746, 0), dec_raw(409, 0))
+    assert_eq(r.to_text(), "-270686171316114")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_mul_00065() {
+    set r = dec_mul(dec_raw(126, 2), dec_raw(661, 0))
+    assert_eq(r.to_text(), "832.86")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_mul_00067() {
+    set r = dec_mul(dec_raw(926572819232, 1), dec_raw(694, 0))
+    assert_eq(r.to_text(), "64304153654700.8")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_mul_00068() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul(dec_raw(-2399188678856135184, 2), dec_raw(874260011054, 2))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_mul_00069() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul(dec_raw(39303800, 0), dec_raw(-996049557252815380, 0))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_mul_00070() {
+    set r = dec_mul(dec_raw(83210507491, 9), dec_raw(748, 9))
+    assert_eq(r.to_text(), "0.000062241")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_mul_00071() {
+    set r = dec_mul(dec_raw(148, 8), dec_raw(-5, 0))
+    assert_eq(r.to_text(), "-0.00000740")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_mul_00072() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul(dec_raw(-3490506856997373379, 2), dec_raw(721067232766, 2))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_mul_00074() {
+    set r = dec_mul(dec_raw(0, 3), dec_raw(-921776112035, 3))
+    assert_eq(r.to_text(), "0.000000")
+    assert_eq(r.scale_value(), 6)
+}
+
+#[test]
+fun c_mul_00075() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul(dec_raw(-297965666003, 2), dec_raw(-998256915130, 2))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_mul_00076() {
+    set r = dec_mul(dec_raw(-822593005005, 0), dec_raw(779, 0))
+    assert_eq(r.to_text(), "-640799950898895")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_mul_00079() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul(dec_raw(250877814033, 2), dec_raw(-647544079354, 2))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_mul_exact_00000() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_exact(dec_raw(416050454355, 9), dec_raw(-3180612716711716569, 3))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PRECISION")
+}
+
+#[test]
+fun c_mul_exact_00001() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_exact(dec_raw(-508, 8), dec_raw(-885, 3))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PRECISION")
+}
+
+#[test]
+fun c_mul_exact_00002() {
+    set r = dec_mul_exact(dec_raw(398, 2), dec_raw(590, 2))
+    assert_eq(r.to_text(), "23.4820")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_mul_exact_00003() {
+    set r = dec_mul_exact(dec_raw(-6, 4), dec_raw(-11053918882776037, 4))
+    assert_eq(r.to_text(), "663235132.96656222")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_mul_exact_00004() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_exact(dec_raw(-7284202092891928725, 0), dec_raw(-716, 9))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_mul_exact_00005() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_exact(dec_raw(-408809418514, 0), dec_raw(491891577971, 1))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_mul_exact_00006() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_exact(dec_raw(777354749986629432, 4), dec_raw(-179519683645, 1))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_mul_exact_00007() {
+    set r = dec_mul_exact(dec_raw(12422800, 0), dec_raw(904, 0))
+    assert_eq(r.to_text(), "11230211200")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_mul_exact_00008() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_exact(dec_raw(127520418495, 3), dec_raw(974334830776, 3))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_mul_exact_00009() {
+    set r = dec_mul_exact(dec_raw(-458, 0), dec_raw(-991, 0))
+    assert_eq(r.to_text(), "453878")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_mul_exact_00010() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_exact(dec_raw(0, 8), dec_raw(-1, 8))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PRECISION")
+}
+
+#[test]
+fun c_mul_exact_00011() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_exact(dec_raw(53326915933197609, 0), dec_raw(613955609576129837, 0))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_mul_exact_00012() {
+    set r = dec_mul_exact(dec_raw(-5, 0), dec_raw(539166325875, 1))
+    assert_eq(r.to_text(), "-269583162937.5")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_mul_exact_00013() {
+    set r = dec_mul_exact(dec_raw(-632, 2), dec_raw(-319, 4))
+    assert_eq(r.to_text(), "0.201608")
+    assert_eq(r.scale_value(), 6)
+}
+
+#[test]
+fun c_mul_exact_00014() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_exact(dec_raw(589355843736, 4), dec_raw(-4026406706249533147, 0))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_mul_exact_00015() {
+    set r = dec_mul_exact(dec_raw(-458, 1), dec_raw(930, 1))
+    assert_eq(r.to_text(), "-4259.40")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_mul_exact_00016() {
+    set r = dec_mul_exact(dec_raw(95910607877, 0), dec_raw(-1, 9))
+    assert_eq(r.to_text(), "-95.910607877")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_mul_exact_00017() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_exact(dec_raw(-974134562036, 1), dec_raw(2858510652484835851, 1))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_mul_exact_00018() {
+    set r = dec_mul_exact(dec_raw(0, 3), dec_raw(55192609049, 3))
+    assert_eq(r.to_text(), "0.000000")
+    assert_eq(r.scale_value(), 6)
+}
+
+#[test]
+fun c_mul_exact_00019() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_exact(dec_raw(33252100000, 9), dec_raw(937, 1))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PRECISION")
+}
+
+#[test]
+fun c_mul_exact_00020() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_exact(dec_raw(5798674994393991967, 0), dec_raw(-871, 0))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_mul_exact_00021() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_exact(dec_raw(633442215231, 8), dec_raw(196, 2))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PRECISION")
+}
+
+#[test]
+fun c_mul_exact_00022() {
+    set r = dec_mul_exact(dec_raw(-990, 0), dec_raw(385, 0))
+    assert_eq(r.to_text(), "-381150")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_mul_exact_00023() {
+    set r = dec_mul_exact(dec_raw(-526, 2), dec_raw(679559000000, 2))
+    assert_eq(r.to_text(), "-35744803400.0000")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_mul_exact_00024() {
+    set r = dec_mul_exact(dec_raw(-154, 1), dec_raw(-51039084246, 0))
+    assert_eq(r.to_text(), "786001897388.4")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_mul_exact_00025() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_exact(dec_raw(-107096188418, 0), dec_raw(27348179946560649, 9))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_mul_exact_00026() {
+    set r = dec_mul_exact(dec_raw(173930233961, 2), dec_raw(0, 0))
+    assert_eq(r.to_text(), "0.00")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_mul_exact_00027() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_exact(dec_raw(28012400000, 9), dec_raw(418779195266, 9))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PRECISION")
+}
+
+#[test]
+fun c_mul_exact_00028() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_exact(dec_raw(599491120700, 9), dec_raw(-930020876710214913, 3))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PRECISION")
+}
+
+#[test]
+fun c_mul_exact_00029() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_exact(dec_raw(581, 9), dec_raw(-797232576486, 2))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PRECISION")
+}
+
+#[test]
+fun c_mul_exact_00030() {
+    set r = dec_mul_exact(dec_raw(-498765615858, 0), dec_raw(-108, 1))
+    assert_eq(r.to_text(), "5386668651266.4")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_mul_exact_00031() {
+    set r = dec_mul_exact(dec_raw(49175800, 2), dec_raw(368, 2))
+    assert_eq(r.to_text(), "1809669.4400")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_mul_exact_00032() {
+    set r = dec_mul_exact(dec_raw(-328835105402, 2), dec_raw(-209, 2))
+    assert_eq(r.to_text(), "6872653702.9018")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_mul_exact_00033() {
+    set r = dec_mul_exact(dec_raw(18941933468, 2), dec_raw(1312190, 2))
+    assert_eq(r.to_text(), "2485541567737.4920")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_mul_exact_00034() {
+    set r = dec_mul_exact(dec_raw(159459620576, 1), dec_raw(86, 1))
+    assert_eq(r.to_text(), "137135273695.36")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_mul_exact_00035() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_exact(dec_raw(862225621418594447, 9), dec_raw(-582, 9))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PRECISION")
+}
+
+#[test]
+fun c_mul_exact_00036() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_exact(dec_raw(112, 2), dec_raw(64958500000, 9))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PRECISION")
+}
+
+#[test]
+fun c_mul_exact_00037() {
+    set r = dec_mul_exact(dec_raw(0, 3), dec_raw(385, 3))
+    assert_eq(r.to_text(), "0.000000")
+    assert_eq(r.scale_value(), 6)
+}
+
+#[test]
+fun c_mul_exact_00038() {
+    set r = dec_mul_exact(dec_raw(781127985559, 4), dec_raw(-60, 2))
+    assert_eq(r.to_text(), "-46867679.133540")
+    assert_eq(r.scale_value(), 6)
+}
+
+#[test]
+fun c_mul_exact_00039() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_exact(dec_raw(561496807201, 9), dec_raw(-820, 4))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PRECISION")
+}
+
+#[test]
+fun c_mul_exact_00040() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_exact(dec_raw(-24225068990, 0), dec_raw(-957261887102, 0))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_mul_exact_00041() {
+    set r = dec_mul_exact(dec_raw(-262, 0), dec_raw(644173036422, 0))
+    assert_eq(r.to_text(), "-168773335542564")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_mul_exact_00042() {
+    set r = dec_mul_exact(dec_raw(-835310689904353793, 2), dec_raw(0, 2))
+    assert_eq(r.to_text(), "0.0000")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_mul_exact_00043() {
+    set r = dec_mul_exact(dec_raw(-193, 0), dec_raw(411941390777, 9))
+    assert_eq(r.to_text(), "-79504.688419961")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_mul_exact_00044() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_exact(dec_raw(97819315114, 3), dec_raw(7564470300594289825, 3))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_mul_exact_00045() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_exact(dec_raw(-770, 2), dec_raw(-18, 9))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PRECISION")
+}
+
+#[test]
+fun c_mul_exact_00046() {
+    set r = dec_mul_exact(dec_raw(394, 4), dec_raw(938903000, 3))
+    assert_eq(r.to_text(), "36992.7782000")
+    assert_eq(r.scale_value(), 7)
+}
+
+#[test]
+fun c_mul_exact_00047() {
+    set r = dec_mul_exact(dec_raw(329, 1), dec_raw(-201, 1))
+    assert_eq(r.to_text(), "-661.29")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_mul_exact_00048() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_exact(dec_raw(-959, 4), dec_raw(2321696337903999120, 4))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_mul_exact_00049() {
+    set r = dec_mul_exact(dec_raw(-776257322720, 2), dec_raw(-764, 2))
+    assert_eq(r.to_text(), "59306059455.8080")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_mul_exact_00050() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_exact(dec_raw(868242887459, 8), dec_raw(25, 3))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PRECISION")
+}
+
+#[test]
+fun c_mul_exact_00051() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_exact(dec_raw(56392955797, 2), dec_raw(589137882412, 9))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PRECISION")
+}
+
+#[test]
+fun c_mul_exact_00052() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_exact(dec_raw(747059173345, 2), dec_raw(983687485200, 8))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PRECISION")
+}
+
+#[test]
+fun c_mul_exact_00053() {
+    set r = dec_mul_exact(dec_raw(-218, 4), dec_raw(3815390000, 4))
+    assert_eq(r.to_text(), "-8317.55020000")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_mul_exact_00054() {
+    set r = dec_mul_exact(dec_raw(6459760, 4), dec_raw(499219959881, 4))
+    assert_eq(r.to_text(), "32248411280.40888560")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_mul_exact_00055() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_exact(dec_raw(-985426112221, 8), dec_raw(822, 8))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PRECISION")
+}
+
+#[test]
+fun c_mul_exact_00056() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_exact(dec_raw(-5, 9), dec_raw(6947735704326327676, 9))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PRECISION")
+}
+
+#[test]
+fun c_mul_exact_00057() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_exact(dec_raw(1297870000, 9), dec_raw(296240448588, 9))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PRECISION")
+}
+
+#[test]
+fun c_mul_exact_00058() {
+    set r = dec_mul_exact(dec_raw(877505688211, 8), dec_raw(-293, 0))
+    assert_eq(r.to_text(), "-2571091.66645823")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_mul_exact_00059() {
+    set r = dec_mul_exact(dec_raw(723, 0), dec_raw(370270000, 1))
+    assert_eq(r.to_text(), "26770521000.0")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_mul_fit_00000() {
+    set r = dec_mul_with(dec_raw(703749861295, 0), dec_raw(801, 0), Round::Ceiling)
+    assert_eq(r.to_text(), "563703638897295")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_mul_fit_00001() {
+    set r = dec_mul_with(dec_raw(-176, 0), dec_raw(83667869489, 2), Round::Down)
+    assert_eq(r.to_text(), "-147255450300.64")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_mul_fit_00002() {
+    set r = dec_mul_with(dec_raw(52, 9), dec_raw(-294875808091, 1), Round::HalfUp)
+    assert_eq(r.to_text(), "-1533.354202073")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_mul_fit_00003() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_with(dec_raw(-326150409039, 0), dec_raw(636897689416, 0), Round::Up)
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_mul_fit_00004() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_with(dec_raw(-683972093223, 1), dec_raw(351169000000, 0), Round::Down)
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_mul_fit_00005() {
+    set r = dec_mul_with(dec_raw(-237, 0), dec_raw(942952799764, 2), Round::HalfUp)
+    assert_eq(r.to_text(), "-2234798135440.68")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_mul_fit_00006() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_with(dec_raw(289413041609, 1), dec_raw(-659755550998, 1), Round::HalfUp)
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_mul_fit_00008() {
+    set r = dec_mul_with(dec_raw(-182, 8), dec_raw(-974, 2), Round::HalfUp)
+    assert_eq(r.to_text(), "0.000017727")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_mul_fit_00009() {
+    set r = dec_mul_with(dec_raw(6351180, 4), dec_raw(-798, 4), Round::Ceiling)
+    assert_eq(r.to_text(), "-50.68241640")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_mul_fit_00010() {
+    set r = dec_mul_with(dec_raw(-829, 4), dec_raw(-663, 4), Round::HalfEven)
+    assert_eq(r.to_text(), "0.00549627")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_mul_fit_00012() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_with(dec_raw(-288561460143, 1), dec_raw(462616283386, 1), Round::Up)
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_mul_fit_00013() {
+    set r = dec_mul_with(dec_raw(753651420803, 4), dec_raw(-572, 4), Round::Down)
+    assert_eq(r.to_text(), "-4310886.12699316")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_mul_fit_00014() {
+    set r = dec_mul_with(dec_raw(359013814685, 8), dec_raw(-829, 2), Round::Ceiling)
+    assert_eq(r.to_text(), "-29762.245237386")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_mul_fit_00015() {
+    set r = dec_mul_with(dec_raw(-491, 8), dec_raw(-378, 8), Round::Down)
+    assert_eq(r.to_text(), "0.000000000")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_mul_fit_00019() {
+    set r = dec_mul_with(dec_raw(-380, 0), dec_raw(1, 0), Round::Down)
+    assert_eq(r.to_text(), "-380")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_mul_fit_00020() {
+    set r = dec_mul_with(dec_raw(-527, 4), dec_raw(0, 4), Round::HalfUp)
+    assert_eq(r.to_text(), "0.00000000")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_mul_fit_00022() {
+    set r = dec_mul_with(dec_raw(-968, 8), dec_raw(445848743678, 0), Round::Down)
+    assert_eq(r.to_text(), "-4315815.83880304")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_mul_fit_00023() {
+    set r = dec_mul_with(dec_raw(-457, 0), dec_raw(237553515690, 0), Round::HalfEven)
+    assert_eq(r.to_text(), "-108561956670330")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_mul_fit_00024() {
+    set r = dec_mul_with(dec_raw(965, 2), dec_raw(691420833424, 2), Round::Floor)
+    assert_eq(r.to_text(), "66722110425.4160")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_mul_fit_00025() {
+    set r = dec_mul_with(dec_raw(-5, 0), dec_raw(777, 8), Round::Ceiling)
+    assert_eq(r.to_text(), "-0.00003885")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_mul_fit_00026() {
+    set r = dec_mul_with(dec_raw(-520, 4), dec_raw(20269651668, 3), Round::HalfUp)
+    assert_eq(r.to_text(), "-1054021.8867360")
+    assert_eq(r.scale_value(), 7)
+}
+
+#[test]
+fun c_mul_fit_00027() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_with(dec_raw(650958849028, 1), dec_raw(77247468427097991, 8), Round::Ceiling)
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_mul_fit_00028() {
+    set r = dec_mul_with(dec_raw(569, 3), dec_raw(-997, 8), Round::HalfDown)
+    assert_eq(r.to_text(), "-0.000005673")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_mul_fit_00029() {
+    set r = dec_mul_with(dec_raw(484, 2), dec_raw(-744, 2), Round::Down)
+    assert_eq(r.to_text(), "-36.0096")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_mul_fit_00031() {
+    set r = dec_mul_with(dec_raw(0, 9), dec_raw(-844325093833, 0), Round::HalfDown)
+    assert_eq(r.to_text(), "0.000000000")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_mul_fit_00032() {
+    set r = dec_mul_with(dec_raw(-424, 9), dec_raw(-117649365624, 9), Round::HalfUp)
+    assert_eq(r.to_text(), "0.000049883")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_mul_fit_00033() {
+    set r = dec_mul_with(dec_raw(199, 9), dec_raw(1, 1), Round::Up)
+    assert_eq(r.to_text(), "0.000000020")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_mul_fit_00034() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_with(dec_raw(46317700, 0), dec_raw(686401671423, 0), Round::Ceiling)
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_mul_fit_00035() {
+    set r = dec_mul_with(dec_raw(5, 0), dec_raw(64, 2), Round::Floor)
+    assert_eq(r.to_text(), "3.20")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_mul_fit_00036() {
+    set r = dec_mul_with(dec_raw(987691578707, 0), dec_raw(-868, 0), Round::Up)
+    assert_eq(r.to_text(), "-857316290317676")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_mul_fit_00037() {
+    set r = dec_mul_with(dec_raw(-385549721480, 2), dec_raw(-25, 3), Round::Ceiling)
+    assert_eq(r.to_text(), "96387430.37000")
+    assert_eq(r.scale_value(), 5)
+}
+
+#[test]
+fun c_mul_fit_00038() {
+    set r = dec_mul_with(dec_raw(724685000, 8), dec_raw(-960, 8), Round::Up)
+    assert_eq(r.to_text(), "-0.000069570")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_mul_fit_00039() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_with(dec_raw(-948668251915, 0), dec_raw(665677000, 0), Round::Down)
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_mul_fit_00040() {
+    set r = dec_mul_with(dec_raw(925360817491, 0), dec_raw(-566, 0), Round::Down)
+    assert_eq(r.to_text(), "-523754222699906")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_mul_fit_00042() {
+    set r = dec_mul_with(dec_raw(-909, 2), dec_raw(395, 2), Round::Up)
+    assert_eq(r.to_text(), "-35.9055")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_mul_fit_00043() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_with(dec_raw(329728536648, 1), dec_raw(35990450435560924, 1), Round::HalfDown)
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_mul_fit_00044() {
+    set r = dec_mul_with(dec_raw(128657270547, 0), dec_raw(-245, 0), Round::HalfEven)
+    assert_eq(r.to_text(), "-31521031284015")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_mul_fit_00045() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_with(dec_raw(-403433802608, 0), dec_raw(715476027399, 0), Round::HalfUp)
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_mul_fit_00046() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_with(dec_raw(-661, 0), dec_raw(-2659361300947139612, 0), Round::Down)
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_mul_fit_00048() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_with(dec_raw(2954746684555533610, 2), dec_raw(953400622974, 3), Round::Floor)
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_mul_fit_00049() {
+    set r = dec_mul_with(dec_raw(-697, 0), dec_raw(-272213900917, 1), Round::HalfEven)
+    assert_eq(r.to_text(), "18973308893914.9")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_mul_fit_00050() {
+    set r = dec_mul_with(dec_raw(-329, 3), dec_raw(54978900000, 3), Round::HalfEven)
+    assert_eq(r.to_text(), "-18088058.100000")
+    assert_eq(r.scale_value(), 6)
+}
+
+#[test]
+fun c_mul_fit_00051() {
+    set r = dec_mul_with(dec_raw(-450899552053, 0), dec_raw(-1, 2), Round::HalfEven)
+    assert_eq(r.to_text(), "4508995520.53")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_mul_fit_00052() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_with(dec_raw(-437346308163, 1), dec_raw(272617489695, 0), Round::Floor)
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_mul_fit_00053() {
+    set r = dec_mul_with(dec_raw(26970000, 8), dec_raw(-635, 2), Round::Up)
+    assert_eq(r.to_text(), "-1.712595000")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_mul_fit_00054() {
+    set r = dec_mul_with(dec_raw(855, 8), dec_raw(-502346926259, 8), Round::Down)
+    assert_eq(r.to_text(), "-0.042950662")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_mul_fit_00055() {
+    set r = dec_mul_with(dec_raw(229441983887, 4), dec_raw(3961010, 4), Round::HalfDown)
+    assert_eq(r.to_text(), "9088219925.96245870")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_mul_fit_00056() {
+    set r = dec_mul_with(dec_raw(571, 0), dec_raw(-917895739762, 2), Round::Down)
+    assert_eq(r.to_text(), "-5241184674041.02")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_mul_fit_00057() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_with(dec_raw(-47332254840458482, 0), dec_raw(-135989799114, 0), Round::Down)
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_mul_fit_00058() {
+    set r = dec_mul_with(dec_raw(-74416755373, 8), dec_raw(200, 8), Round::HalfUp)
+    assert_eq(r.to_text(), "-0.001488335")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_mul_fit_00059() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_with(dec_raw(284061035257946848, 2), dec_raw(74997931565, 0), Round::Up)
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_mul_fit_00060() {
+    set r = dec_mul_with(dec_raw(-178694921161, 1), dec_raw(-929, 1), Round::Floor)
+    assert_eq(r.to_text(), "1660075817585.69")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_mul_fit_00061() {
+    set r = dec_mul_with(dec_raw(794, 1), dec_raw(159, 3), Round::HalfUp)
+    assert_eq(r.to_text(), "12.6246")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_mul_fit_00062() {
+    set r = dec_mul_with(dec_raw(391814000000, 4), dec_raw(134, 4), Round::Up)
+    assert_eq(r.to_text(), "525030.76000000")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_mul_fit_00063() {
+    set r = dec_mul_with(dec_raw(-76735021693, 1), dec_raw(-856, 2), Round::Down)
+    assert_eq(r.to_text(), "65685178569.208")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_mul_fit_00064() {
+    set r = dec_mul_with(dec_raw(783, 9), dec_raw(1, 0), Round::Floor)
+    assert_eq(r.to_text(), "0.000000783")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_mul_fit_00065() {
+    set r = dec_mul_with(dec_raw(-1038010750262007526, 2), dec_raw(-1, 1), Round::HalfUp)
+    assert_eq(r.to_text(), "1038010750262007.526")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_mul_fit_00066() {
+    set r = dec_mul_with(dec_raw(-937664586219, 8), dec_raw(57, 0), Round::Down)
+    assert_eq(r.to_text(), "-534468.81414483")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_mul_fit_00068() {
+    set r = dec_mul_with(dec_raw(-25, 1), dec_raw(-628, 4), Round::HalfDown)
+    assert_eq(r.to_text(), "0.15700")
+    assert_eq(r.scale_value(), 5)
+}
+
+#[test]
+fun c_mul_fit_00071() {
+    set r = dec_mul_with(dec_raw(-538, 0), dec_raw(850418000000, 0), Round::HalfUp)
+    assert_eq(r.to_text(), "-457524884000000")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_normalize_00000() {
+    set r = dec_raw(12300, 4).normalize()
+    assert_eq(r.to_text(), "1.23")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_normalize_00001() {
+    set r = dec_raw(100, 0).normalize()
+    assert_eq(r.to_text(), "100")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_normalize_00002() {
+    set r = dec_raw(0, 3).normalize()
+    assert_eq(r.to_text(), "0")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_normalize_00003() {
+    set r = dec_raw(-1500, 3).normalize()
+    assert_eq(r.to_text(), "-1.5")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_normalize_00004() {
+    set r = dec_raw(12, 0).normalize()
+    assert_eq(r.to_text(), "12")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_normalize_00005() {
+    set r = dec_raw(-360, 9).normalize()
+    assert_eq(r.to_text(), "-0.00000036")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_normalize_00006() {
+    set r = dec_raw(-870000, 8).normalize()
+    assert_eq(r.to_text(), "-0.0087")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_normalize_00007() {
+    set r = dec_raw(-26500000, 1).normalize()
+    assert_eq(r.to_text(), "-2650000")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_normalize_00008() {
+    set r = dec_raw(-6104744584948671200, 4).normalize()
+    assert_eq(r.to_text(), "-610474458494867.12")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_normalize_00009() {
+    set r = dec_raw(527068341721000, 2).normalize()
+    assert_eq(r.to_text(), "5270683417210")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_normalize_00010() {
+    set r = dec_raw(-989585167324, 1).normalize()
+    assert_eq(r.to_text(), "-98958516732.4")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_normalize_00011() {
+    set r = dec_raw(-9717982763539731540000, 0).normalize()
+    assert_eq(r.to_text(), "-9717982763539731540000")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_normalize_00012() {
+    set r = dec_raw(7020, 0).normalize()
+    assert_eq(r.to_text(), "7020")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_normalize_00013() {
+    set r = dec_raw(98721300, 8).normalize()
+    assert_eq(r.to_text(), "0.987213")
+    assert_eq(r.scale_value(), 6)
+}
+
+#[test]
+fun c_normalize_00014() {
+    set r = dec_raw(-722641478312031132, 0).normalize()
+    assert_eq(r.to_text(), "-722641478312031132")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_normalize_00015() {
+    set r = dec_raw(356619000, 9).normalize()
+    assert_eq(r.to_text(), "0.356619")
+    assert_eq(r.scale_value(), 6)
+}
+
+#[test]
+fun c_normalize_00016() {
+    set r = dec_raw(-911000, 2).normalize()
+    assert_eq(r.to_text(), "-9110")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_normalize_00017() {
+    set r = dec_raw(-827246000353, 0).normalize()
+    assert_eq(r.to_text(), "-827246000353")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_normalize_00018() {
+    set r = dec_raw(-394, 3).normalize()
+    assert_eq(r.to_text(), "-0.394")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_normalize_00019() {
+    set r = dec_raw(-867567440704, 2).normalize()
+    assert_eq(r.to_text(), "-8675674407.04")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_normalize_00020() {
+    set r = dec_raw(-542, 3).normalize()
+    assert_eq(r.to_text(), "-0.542")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_normalize_00021() {
+    set r = dec_raw(0, 0).normalize()
+    assert_eq(r.to_text(), "0")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_normalize_00022() {
+    set r = dec_raw(8049410000, 2).normalize()
+    assert_eq(r.to_text(), "80494100")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_normalize_00023() {
+    set r = dec_raw(-804089645309240380800, 3).normalize()
+    assert_eq(r.to_text(), "-804089645309240380.8")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_normalize_00024() {
+    set r = dec_raw(467, 3).normalize()
+    assert_eq(r.to_text(), "0.467")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_normalize_00025() {
+    set r = dec_raw(-63127414017600, 2).normalize()
+    assert_eq(r.to_text(), "-631274140176")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_normalize_00026() {
+    set r = dec_raw(380592000, 0).normalize()
+    assert_eq(r.to_text(), "380592000")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_normalize_00027() {
+    set r = dec_raw(80159795029000, 2).normalize()
+    assert_eq(r.to_text(), "801597950290")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_normalize_00028() {
+    set r = dec_raw(78101000, 8).normalize()
+    assert_eq(r.to_text(), "0.78101")
+    assert_eq(r.scale_value(), 5)
+}
+
+#[test]
+fun c_normalize_00029() {
+    set r = dec_raw(134643285020, 1).normalize()
+    assert_eq(r.to_text(), "13464328502")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_normalize_00030() {
+    set r = dec_raw(447114034864, 9).normalize()
+    assert_eq(r.to_text(), "447.114034864")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_normalize_00031() {
+    set r = dec_raw(8059012606080, 3).normalize()
+    assert_eq(r.to_text(), "8059012606.08")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_normalize_00032() {
+    set r = dec_raw(-784000000, 0).normalize()
+    assert_eq(r.to_text(), "-784000000")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_normalize_00033() {
+    set r = dec_raw(4000, 4).normalize()
+    assert_eq(r.to_text(), "0.4")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_normalize_00034() {
+    set r = dec_raw(-315000, 2).normalize()
+    assert_eq(r.to_text(), "-3150")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_normalize_00035() {
+    set r = dec_raw(380470135111, 4).normalize()
+    assert_eq(r.to_text(), "38047013.5111")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_normalize_00036() {
+    set r = dec_raw(2500000, 2).normalize()
+    assert_eq(r.to_text(), "25000")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_normalize_00037() {
+    set r = dec_raw(0, 2).normalize()
+    assert_eq(r.to_text(), "0")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_normalize_00038() {
+    set r = dec_raw(534947412726, 9).normalize()
+    assert_eq(r.to_text(), "534.947412726")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_normalize_00039() {
+    set r = dec_raw(93000, 4).normalize()
+    assert_eq(r.to_text(), "9.3")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_normalize_00040() {
+    set r = dec_raw(-14035914071900000, 2).normalize()
+    assert_eq(r.to_text(), "-140359140719000")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_normalize_00041() {
+    set r = dec_raw(67772972727000, 2).normalize()
+    assert_eq(r.to_text(), "677729727270")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_normalize_00042() {
+    set r = dec_raw(8981880000, 2).normalize()
+    assert_eq(r.to_text(), "89818800")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_normalize_00043() {
+    set r = dec_raw(930857357807, 3).normalize()
+    assert_eq(r.to_text(), "930857357.807")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_normalize_00044() {
+    set r = dec_raw(-4613657806980, 8).normalize()
+    assert_eq(r.to_text(), "-46136.5780698")
+    assert_eq(r.scale_value(), 7)
+}
+
+#[test]
+fun c_normalize_00045() {
+    set r = dec_raw(-941, 2).normalize()
+    assert_eq(r.to_text(), "-9.41")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_normalize_00046() {
+    set r = dec_raw(35726800, 4).normalize()
+    assert_eq(r.to_text(), "3572.68")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_normalize_00047() {
+    set r = dec_raw(68000, 1).normalize()
+    assert_eq(r.to_text(), "6800")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_normalize_00048() {
+    set r = dec_raw(-269255028038000, 0).normalize()
+    assert_eq(r.to_text(), "-269255028038000")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_normalize_00049() {
+    set r = dec_raw(-4863591685461667456, 0).normalize()
+    assert_eq(r.to_text(), "-4863591685461667456")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_normalize_00050() {
+    set r = dec_raw(1671461591390, 2).normalize()
+    assert_eq(r.to_text(), "16714615913.9")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_normalize_00051() {
+    set r = dec_raw(9637480000, 3).normalize()
+    assert_eq(r.to_text(), "9637480")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_normalize_00052() {
+    set r = dec_raw(-374400554466098493, 9).normalize()
+    assert_eq(r.to_text(), "-374400554.466098493")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_normalize_00053() {
+    set r = dec_raw(86219000, 1).normalize()
+    assert_eq(r.to_text(), "8621900")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_normalize_00054() {
+    set r = dec_raw(780922000000, 2).normalize()
+    assert_eq(r.to_text(), "7809220000")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_normalize_00055() {
+    set r = dec_raw(-182743859676, 0).normalize()
+    assert_eq(r.to_text(), "-182743859676")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_normalize_00056() {
+    set r = dec_raw(-574983024994, 0).normalize()
+    assert_eq(r.to_text(), "-574983024994")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_normalize_00057() {
+    set r = dec_raw(0, 2).normalize()
+    assert_eq(r.to_text(), "0")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_normalize_00058() {
+    set r = dec_raw(56000, 4).normalize()
+    assert_eq(r.to_text(), "5.6")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_normalize_00059() {
+    set r = dec_raw(820000, 9).normalize()
+    assert_eq(r.to_text(), "0.00082")
+    assert_eq(r.scale_value(), 5)
+}
+
+#[test]
+fun c_overflow_00000() {
+    set caught = ""
+    sus {
+        set ignored = dec_add(dec_raw(9223372036854775807, 0), dec_raw(1, 0))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_overflow_00001() {
+    set caught = ""
+    sus {
+        set ignored = dec_add_fit(dec_raw(9223372036854775807, 0), dec_raw(1, 0), Round::HalfEven)
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_overflow_00002() {
+    set r = dec_sub(dec_raw(9223372036854775807, 0), dec_raw(1, 0))
+    assert_eq(r.to_text(), "9223372036854775806")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_overflow_00003() {
+    set r = dec_sub_fit(dec_raw(9223372036854775807, 0), dec_raw(1, 0), Round::HalfEven)
+    assert_eq(r.to_text(), "9223372036854775806")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_overflow_00004() {
+    set r = dec_mul(dec_raw(9223372036854775807, 0), dec_raw(1, 0))
+    assert_eq(r.to_text(), "9223372036854775807")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_overflow_00005() {
+    set r = dec_mul_with(dec_raw(9223372036854775807, 0), dec_raw(1, 0), Round::HalfEven)
+    assert_eq(r.to_text(), "9223372036854775807")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_overflow_00006() {
+    set r = dec_mul_exact(dec_raw(9223372036854775807, 0), dec_raw(1, 0))
+    assert_eq(r.to_text(), "9223372036854775807")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_overflow_00007() {
+    set caught = ""
+    sus {
+        set ignored = dec_add(dec_raw(9223372036854775807, 0), dec_raw(9223372036854775807, 0))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_overflow_00008() {
+    set caught = ""
+    sus {
+        set ignored = dec_add_fit(dec_raw(9223372036854775807, 0), dec_raw(9223372036854775807, 0), Round::HalfEven)
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_overflow_00009() {
+    set r = dec_sub(dec_raw(9223372036854775807, 0), dec_raw(9223372036854775807, 0))
+    assert_eq(r.to_text(), "0")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_overflow_00010() {
+    set r = dec_sub_fit(dec_raw(9223372036854775807, 0), dec_raw(9223372036854775807, 0), Round::HalfEven)
+    assert_eq(r.to_text(), "0")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_overflow_00011() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul(dec_raw(9223372036854775807, 0), dec_raw(9223372036854775807, 0))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_overflow_00012() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_with(dec_raw(9223372036854775807, 0), dec_raw(9223372036854775807, 0), Round::HalfEven)
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_overflow_00013() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_exact(dec_raw(9223372036854775807, 0), dec_raw(9223372036854775807, 0))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_overflow_00014() {
+    set caught = ""
+    sus {
+        set ignored = dec_add(dec_raw(-9223372036854775807, 0), dec_raw(-1, 0))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_overflow_00015() {
+    set caught = ""
+    sus {
+        set ignored = dec_add_fit(dec_raw(-9223372036854775807, 0), dec_raw(-1, 0), Round::HalfEven)
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_overflow_00016() {
+    set r = dec_sub(dec_raw(-9223372036854775807, 0), dec_raw(-1, 0))
+    assert_eq(r.to_text(), "-9223372036854775806")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_overflow_00017() {
+    set r = dec_sub_fit(dec_raw(-9223372036854775807, 0), dec_raw(-1, 0), Round::HalfEven)
+    assert_eq(r.to_text(), "-9223372036854775806")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_overflow_00018() {
+    set r = dec_mul(dec_raw(-9223372036854775807, 0), dec_raw(-1, 0))
+    assert_eq(r.to_text(), "9223372036854775807")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_overflow_00019() {
+    set r = dec_mul_with(dec_raw(-9223372036854775807, 0), dec_raw(-1, 0), Round::HalfEven)
+    assert_eq(r.to_text(), "9223372036854775807")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_overflow_00020() {
+    set r = dec_mul_exact(dec_raw(-9223372036854775807, 0), dec_raw(-1, 0))
+    assert_eq(r.to_text(), "9223372036854775807")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_overflow_00021() {
+    set caught = ""
+    sus {
+        set ignored = dec_add(dec_raw(9223372036854775807, 1), dec_raw(1, 0))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_overflow_00023() {
+    set r = dec_sub(dec_raw(9223372036854775807, 1), dec_raw(1, 0))
+    assert_eq(r.to_text(), "922337203685477579.7")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_overflow_00024() {
+    set r = dec_sub_fit(dec_raw(9223372036854775807, 1), dec_raw(1, 0), Round::HalfEven)
+    assert_eq(r.to_text(), "922337203685477579.7")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_overflow_00025() {
+    set r = dec_mul(dec_raw(9223372036854775807, 1), dec_raw(1, 0))
+    assert_eq(r.to_text(), "922337203685477580.7")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_overflow_00026() {
+    set r = dec_mul_with(dec_raw(9223372036854775807, 1), dec_raw(1, 0), Round::HalfEven)
+    assert_eq(r.to_text(), "922337203685477580.7")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_overflow_00027() {
+    set r = dec_mul_exact(dec_raw(9223372036854775807, 1), dec_raw(1, 0))
+    assert_eq(r.to_text(), "922337203685477580.7")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_overflow_00028() {
+    set r = dec_add(dec_raw(1000000000, 0), dec_raw(1000000000, 0))
+    assert_eq(r.to_text(), "2000000000")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_overflow_00029() {
+    set r = dec_add_fit(dec_raw(1000000000, 0), dec_raw(1000000000, 0), Round::HalfEven)
+    assert_eq(r.to_text(), "2000000000")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_overflow_00030() {
+    set r = dec_sub(dec_raw(1000000000, 0), dec_raw(1000000000, 0))
+    assert_eq(r.to_text(), "0")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_overflow_00031() {
+    set r = dec_sub_fit(dec_raw(1000000000, 0), dec_raw(1000000000, 0), Round::HalfEven)
+    assert_eq(r.to_text(), "0")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_overflow_00032() {
+    set r = dec_mul(dec_raw(1000000000, 0), dec_raw(1000000000, 0))
+    assert_eq(r.to_text(), "1000000000000000000")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_overflow_00033() {
+    set r = dec_mul_with(dec_raw(1000000000, 0), dec_raw(1000000000, 0), Round::HalfEven)
+    assert_eq(r.to_text(), "1000000000000000000")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_overflow_00034() {
+    set r = dec_mul_exact(dec_raw(1000000000, 0), dec_raw(1000000000, 0))
+    assert_eq(r.to_text(), "1000000000000000000")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_overflow_00035() {
+    set r = dec_add(dec_raw(3000000000, 0), dec_raw(4000000000, 0))
+    assert_eq(r.to_text(), "7000000000")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_overflow_00036() {
+    set r = dec_add_fit(dec_raw(3000000000, 0), dec_raw(4000000000, 0), Round::HalfEven)
+    assert_eq(r.to_text(), "7000000000")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_overflow_00037() {
+    set r = dec_sub(dec_raw(3000000000, 0), dec_raw(4000000000, 0))
+    assert_eq(r.to_text(), "-1000000000")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_overflow_00038() {
+    set r = dec_sub_fit(dec_raw(3000000000, 0), dec_raw(4000000000, 0), Round::HalfEven)
+    assert_eq(r.to_text(), "-1000000000")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_overflow_00039() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul(dec_raw(3000000000, 0), dec_raw(4000000000, 0))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_overflow_00040() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_with(dec_raw(3000000000, 0), dec_raw(4000000000, 0), Round::HalfEven)
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_overflow_00041() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_exact(dec_raw(3000000000, 0), dec_raw(4000000000, 0))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_overflow_00043() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul(dec_raw(6691636292151167409, 0), dec_raw(6924242258, 4))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_overflow_00044() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_with(dec_raw(6691636292151167409, 0), dec_raw(6924242258, 4), Round::HalfEven)
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_overflow_00046() {
+    set r = dec_add_fit(dec_raw(4026305611356064371, 9), dec_raw(3674850588, 1), Round::HalfEven)
+    assert_eq(r.to_text(), "4393790670.156064371")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_overflow_00050() {
+    set r = dec_add_fit(dec_raw(1405132467541092340, 9), dec_raw(3024947111, 0), Round::HalfEven)
+    assert_eq(r.to_text(), "4430079578.541092340")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_overflow_00053() {
+    set r = dec_div(dec_raw(1405132467541092340, 9), dec_raw(3024947111, 0), Round::HalfEven)
+    assert_eq(r.to_text(), "0.464514722")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_overflow_00054() {
+    set r = dec_add_fit(dec_raw(7631815580697373646, 9), dec_raw(1112086677, 0), Round::HalfEven)
+    assert_eq(r.to_text(), "8743902257.697373646")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_overflow_00057() {
+    set r = dec_div(dec_raw(7631815580697373646, 9), dec_raw(1112086677, 0), Round::HalfEven)
+    assert_eq(r.to_text(), "6.862608588")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_overflow_00058() {
+    set r = dec_add_fit(dec_raw(1362786544708177731, 9), dec_raw(5027370556, 9), Round::HalfEven)
+    assert_eq(r.to_text(), "1362786549.735548287")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_overflow_00062() {
+    set r = dec_add_fit(dec_raw(8835609828809405526, 1), dec_raw(5143431105, 0), Round::HalfEven)
+    assert_eq(r.to_text(), "883560988024371657.6")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_overflow_00063() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul(dec_raw(8835609828809405526, 1), dec_raw(5143431105, 0))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_overflow_00064() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_with(dec_raw(8835609828809405526, 1), dec_raw(5143431105, 0), Round::HalfEven)
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_overflow_00066() {
+    set r = dec_add_fit(dec_raw(6044352152406872299, 9), dec_raw(8312006934, 9), Round::HalfEven)
+    assert_eq(r.to_text(), "6044352160.718879233")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_overflow_00070() {
+    set r = dec_add_fit(dec_raw(1676857222131288678, 1), dec_raw(8901895348, 0), Round::HalfEven)
+    assert_eq(r.to_text(), "167685731115024215.8")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_overflow_00071() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul(dec_raw(1676857222131288678, 1), dec_raw(8901895348, 0))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_overflow_00072() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_with(dec_raw(1676857222131288678, 1), dec_raw(8901895348, 0), Round::HalfEven)
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_overflow_00075() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul(dec_raw(3229334318181945736, 0), dec_raw(4044248328, 1))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_overflow_00076() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_with(dec_raw(3229334318181945736, 0), dec_raw(4044248328, 1), Round::HalfEven)
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_overflow_00079() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul(dec_raw(475771460578974797, 1), dec_raw(2286284861, 4))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_overflow_00080() {
+    set caught = ""
+    sus {
+        set ignored = dec_mul_with(dec_raw(475771460578974797, 1), dec_raw(2286284861, 4), Round::HalfEven)
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_parse_00000() {
+    set r = dec_parse("0")
+    assert_eq(r.to_text(), "0")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_parse_00001() {
+    set r = dec_parse("1")
+    assert_eq(r.to_text(), "1")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_parse_00002() {
+    set r = dec_parse("-1")
+    assert_eq(r.to_text(), "-1")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_parse_00003() {
+    set r = dec_parse("+7")
+    assert_eq(r.to_text(), "7")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_parse_00004() {
+    set r = dec_parse("0.00")
+    assert_eq(r.to_text(), "0.00")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_parse_00005() {
+    set r = dec_parse("-0.00")
+    assert_eq(r.to_text(), "0.00")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_parse_00006() {
+    set r = dec_parse("1.50")
+    assert_eq(r.to_text(), "1.50")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_parse_00007() {
+    set r = dec_parse("1.2300")
+    assert_eq(r.to_text(), "1.2300")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_parse_00008() {
+    set r = dec_parse("1.005")
+    assert_eq(r.to_text(), "1.005")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_parse_00009() {
+    set r = dec_parse("0.1")
+    assert_eq(r.to_text(), "0.1")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_parse_00010() {
+    set r = dec_parse("0.2")
+    assert_eq(r.to_text(), "0.2")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_parse_00011() {
+    set r = dec_parse("0.3")
+    assert_eq(r.to_text(), "0.3")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_parse_00012() {
+    set r = dec_parse("1234567890.1234")
+    assert_eq(r.to_text(), "1234567890.1234")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_parse_00013() {
+    set r = dec_parse("0.0")
+    assert_eq(r.to_text(), "0.0")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_parse_00014() {
+    set r = dec_parse("1.5e3")
+    assert_eq(r.to_text(), "1500")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_parse_00015() {
+    set r = dec_parse("1.5e-3")
+    assert_eq(r.to_text(), "0.0015")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_parse_00016() {
+    set r = dec_parse("1e0")
+    assert_eq(r.to_text(), "1")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_parse_00017() {
+    set r = dec_parse("1E+2")
+    assert_eq(r.to_text(), "100")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_parse_00018() {
+    set r = dec_parse("0.000000001")
+    assert_eq(r.to_text(), "0.000000001")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_parse_00019() {
+    set r = dec_parse("9223372036854775807")
+    assert_eq(r.to_text(), "9223372036854775807")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_parse_00020() {
+    set r = dec_parse("-9223372036854775807")
+    assert_eq(r.to_text(), "-9223372036854775807")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_parse_00021() {
+    set r = dec_parse("0000123.4500")
+    assert_eq(r.to_text(), "123.4500")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_parse_00022() {
+    set r = dec_parse("+0.000")
+    assert_eq(r.to_text(), "0.000")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_parse_00023() {
+    set r = dec_parse("1e18")
+    assert_eq(r.to_text(), "1000000000000000000")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_parse_00024() {
+    set r = dec_parse("-1e18")
+    assert_eq(r.to_text(), "-1000000000000000000")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_parse_00025() {
+    set r = dec_parse("12.5")
+    assert_eq(r.to_text(), "12.5")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_parse_00026() {
+    set r = dec_parse("999.999999999")
+    assert_eq(r.to_text(), "999.999999999")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_parse_00027() {
+    set caught = ""
+    sus {
+        set ignored = dec_parse("")
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PARSE")
+}
+
+#[test]
+fun c_parse_00028() {
+    set caught = ""
+    sus {
+        set ignored = dec_parse(" ")
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PARSE")
+}
+
+#[test]
+fun c_parse_00029() {
+    set caught = ""
+    sus {
+        set ignored = dec_parse(".")
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PARSE")
+}
+
+#[test]
+fun c_parse_00030() {
+    set caught = ""
+    sus {
+        set ignored = dec_parse(".5")
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PARSE")
+}
+
+#[test]
+fun c_parse_00031() {
+    set caught = ""
+    sus {
+        set ignored = dec_parse("1.")
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PARSE")
+}
+
+#[test]
+fun c_parse_00032() {
+    set caught = ""
+    sus {
+        set ignored = dec_parse("1,5")
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PARSE")
+}
+
+#[test]
+fun c_parse_00033() {
+    set caught = ""
+    sus {
+        set ignored = dec_parse(" 1")
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PARSE")
+}
+
+#[test]
+fun c_parse_00034() {
+    set caught = ""
+    sus {
+        set ignored = dec_parse("1 ")
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PARSE")
+}
+
+#[test]
+fun c_parse_00035() {
+    set caught = ""
+    sus {
+        set ignored = dec_parse("abc")
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PARSE")
+}
+
+#[test]
+fun c_parse_00036() {
+    set caught = ""
+    sus {
+        set ignored = dec_parse("1.2.3")
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PARSE")
+}
+
+#[test]
+fun c_parse_00037() {
+    set caught = ""
+    sus {
+        set ignored = dec_parse("NaN")
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PARSE")
+}
+
+#[test]
+fun c_parse_00038() {
+    set caught = ""
+    sus {
+        set ignored = dec_parse("Inf")
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PARSE")
+}
+
+#[test]
+fun c_parse_00039() {
+    set caught = ""
+    sus {
+        set ignored = dec_parse("-Infinity")
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PARSE")
+}
+
+#[test]
+fun c_parse_00040() {
+    set caught = ""
+    sus {
+        set ignored = dec_parse("1e")
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PARSE")
+}
+
+#[test]
+fun c_parse_00041() {
+    set caught = ""
+    sus {
+        set ignored = dec_parse("e5")
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PARSE")
+}
+
+#[test]
+fun c_parse_00042() {
+    set caught = ""
+    sus {
+        set ignored = dec_parse("--1")
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PARSE")
+}
+
+#[test]
+fun c_parse_00043() {
+    set caught = ""
+    sus {
+        set ignored = dec_parse("1_000")
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PARSE")
+}
+
+#[test]
+fun c_parse_00044() {
+    set caught = ""
+    sus {
+        set ignored = dec_parse("$5")
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PARSE")
+}
+
+#[test]
+fun c_parse_00045() {
+    set caught = ""
+    sus {
+        set ignored = dec_parse("1%")
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PARSE")
+}
+
+#[test]
+fun c_parse_00046() {
+    set caught = ""
+    sus {
+        set ignored = dec_parse("0x10")
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PARSE")
+}
+
+#[test]
+fun c_parse_00047() {
+    set caught = ""
+    sus {
+        set ignored = dec_parse("1..0")
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PARSE")
+}
+
+#[test]
+fun c_parse_00048() {
+    set caught = ""
+    sus {
+        set ignored = dec_parse("+-1")
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PARSE")
+}
+
+#[test]
+fun c_parse_00049() {
+    set caught = ""
+    sus {
+        set ignored = dec_parse("1 234")
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PARSE")
+}
+
+#[test]
+fun c_parse_00050() {
+    set caught = ""
+    sus {
+        set ignored = dec_parse("١٢٣")
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PARSE")
+}
+
+#[test]
+fun c_parse_00051() {
+    set caught = ""
+    sus {
+        set ignored = dec_parse("1.5 e3")
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PARSE")
+}
+
+#[test]
+fun c_parse_00052() {
+    set caught = ""
+    sus {
+        set ignored = dec_parse("92233720368547758079")
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_parse_00053() {
+    set caught = ""
+    sus {
+        set ignored = dec_parse("0.0000000001")
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PRECISION")
+}
+
+#[test]
+fun c_parse_00054() {
+    set caught = ""
+    sus {
+        set ignored = dec_parse("1e-10")
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PRECISION")
+}
+
+#[test]
+fun c_parse_00055() {
+    set caught = ""
+    sus {
+        set ignored = dec_parse("1e19")
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_parse_00056() {
+    set r = dec_parse("1e-9")
+    assert_eq(r.to_text(), "0.000000001")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_parse_00057() {
+    set r = dec_parse("0.999999999")
+    assert_eq(r.to_text(), "0.999999999")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_parse_00058() {
+    set caught = ""
+    sus {
+        set ignored = dec_parse(".e1,_883")
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PARSE")
+}
+
+#[test]
+fun c_parse_00059() {
+    set caught = ""
+    sus {
+        set ignored = dec_parse("+22210425786510.5672934")
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_quantize_00000() {
+    set r = dec_quantize(dec_raw(1005, 3), 2, Round::HalfEven)
+    assert_eq(r.to_text(), "1.00")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_quantize_00001() {
+    set r = dec_quantize(dec_raw(1005, 3), 2, Round::HalfUp)
+    assert_eq(r.to_text(), "1.01")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_quantize_00002() {
+    set r = dec_quantize(dec_raw(15, 1), 0, Round::HalfEven)
+    assert_eq(r.to_text(), "2")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_quantize_00003() {
+    set r = dec_quantize(dec_raw(25, 1), 0, Round::HalfEven)
+    assert_eq(r.to_text(), "2")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_quantize_00004() {
+    set r = dec_quantize(dec_raw(35, 1), 0, Round::HalfEven)
+    assert_eq(r.to_text(), "4")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_quantize_00005() {
+    set r = dec_quantize(dec_raw(-15, 1), 0, Round::HalfUp)
+    assert_eq(r.to_text(), "-2")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_quantize_00006() {
+    set r = dec_quantize(dec_raw(-15, 1), 0, Round::HalfDown)
+    assert_eq(r.to_text(), "-1")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_quantize_00007() {
+    set r = dec_quantize(dec_raw(15, 1), 0, Round::Down)
+    assert_eq(r.to_text(), "1")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_quantize_00008() {
+    set r = dec_quantize(dec_raw(-15, 1), 0, Round::Down)
+    assert_eq(r.to_text(), "-1")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_quantize_00009() {
+    set r = dec_quantize(dec_raw(15, 1), 0, Round::Up)
+    assert_eq(r.to_text(), "2")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_quantize_00010() {
+    set r = dec_quantize(dec_raw(-15, 1), 0, Round::Up)
+    assert_eq(r.to_text(), "-2")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_quantize_00011() {
+    set r = dec_quantize(dec_raw(15, 1), 0, Round::Ceiling)
+    assert_eq(r.to_text(), "2")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_quantize_00012() {
+    set r = dec_quantize(dec_raw(-15, 1), 0, Round::Ceiling)
+    assert_eq(r.to_text(), "-1")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_quantize_00013() {
+    set r = dec_quantize(dec_raw(15, 1), 0, Round::Floor)
+    assert_eq(r.to_text(), "1")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_quantize_00014() {
+    set r = dec_quantize(dec_raw(-15, 1), 0, Round::Floor)
+    assert_eq(r.to_text(), "-2")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_quantize_00015() {
+    set r = dec_quantize(dec_raw(5, 0), 2, Round::HalfEven)
+    assert_eq(r.to_text(), "5.00")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_quantize_00016() {
+    set r = dec_quantize(dec_raw(12345, 2), 4, Round::HalfEven)
+    assert_eq(r.to_text(), "123.4500")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_quantize_00017() {
+    set caught = ""
+    sus {
+        set ignored = dec_quantize(dec_raw(12345, 2), 10, Round::HalfEven)
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PRECISION")
+}
+
+#[test]
+fun c_quantize_00018() {
+    set caught = ""
+    sus {
+        set ignored = dec_quantize(dec_raw(100000000000000000, 0), 2, Round::HalfEven)
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_quantize_00019() {
+    set r = dec_quantize(dec_raw(0, 0), 4, Round::HalfEven)
+    assert_eq(r.to_text(), "0.0000")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_quantize_00020() {
+    set r = dec_quantize(dec_raw(1, 0), 9, Round::HalfEven)
+    assert_eq(r.to_text(), "1.000000000")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_quantize_00021() {
+    set r = dec_quantize(dec_raw(-20637845186040180, 0), 0, Round::HalfEven)
+    assert_eq(r.to_text(), "-20637845186040180")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_quantize_00022() {
+    set r = dec_quantize(dec_raw(31009200, 8), 3, Round::Ceiling)
+    assert_eq(r.to_text(), "0.311")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_quantize_00023() {
+    set r = dec_quantize(dec_raw(-193331048135, 2), 0, Round::HalfDown)
+    assert_eq(r.to_text(), "-1933310481")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_quantize_00024() {
+    set caught = ""
+    sus {
+        set ignored = dec_quantize(dec_raw(-278404596387, 8), 10, Round::Down)
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PRECISION")
+}
+
+#[test]
+fun c_quantize_00025() {
+    set r = dec_quantize(dec_raw(674191726050, 3), 1, Round::Down)
+    assert_eq(r.to_text(), "674191726.0")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_quantize_00026() {
+    set r = dec_quantize(dec_raw(-52, 2), 2, Round::Floor)
+    assert_eq(r.to_text(), "-0.52")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_quantize_00027() {
+    set r = dec_quantize(dec_raw(-129918611528, 8), 3, Round::Floor)
+    assert_eq(r.to_text(), "-1299.187")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_quantize_00028() {
+    set r = dec_quantize(dec_raw(458458387136, 0), 2, Round::Down)
+    assert_eq(r.to_text(), "458458387136.00")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_quantize_00029() {
+    set r = dec_quantize(dec_raw(-255, 9), 3, Round::Up)
+    assert_eq(r.to_text(), "-0.001")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_quantize_00030() {
+    set r = dec_quantize(dec_raw(-1, 0), 0, Round::Ceiling)
+    assert_eq(r.to_text(), "-1")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_quantize_00031() {
+    set caught = ""
+    sus {
+        set ignored = dec_quantize(dec_raw(-2196515044112353367, 1), 3, Round::HalfEven)
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_quantize_00032() {
+    set r = dec_quantize(dec_raw(483, 8), 1, Round::Up)
+    assert_eq(r.to_text(), "0.1")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_quantize_00033() {
+    set r = dec_quantize(dec_raw(75, 0), 3, Round::Up)
+    assert_eq(r.to_text(), "75.000")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_quantize_00034() {
+    set r = dec_quantize(dec_raw(-416, 2), 2, Round::HalfUp)
+    assert_eq(r.to_text(), "-4.16")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_quantize_00035() {
+    set caught = ""
+    sus {
+        set ignored = dec_quantize(dec_raw(-945165026334, 0), 10, Round::HalfEven)
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PRECISION")
+}
+
+#[test]
+fun c_quantize_00036() {
+    set r = dec_quantize(dec_raw(857958652713, 2), 2, Round::Up)
+    assert_eq(r.to_text(), "8579586527.13")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_quantize_00037() {
+    set r = dec_quantize(dec_raw(66089743149987229, 3), 3, Round::Up)
+    assert_eq(r.to_text(), "66089743149987.229")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_quantize_00038() {
+    set r = dec_quantize(dec_raw(48112500, 4), 4, Round::Ceiling)
+    assert_eq(r.to_text(), "4811.2500")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_quantize_00039() {
+    set caught = ""
+    sus {
+        set ignored = dec_quantize(dec_raw(-636, 8), 10, Round::Up)
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PRECISION")
+}
+
+#[test]
+fun c_quantize_00040() {
+    set r = dec_quantize(dec_raw(1, 0), 3, Round::Ceiling)
+    assert_eq(r.to_text(), "1.000")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_quantize_00041() {
+    set r = dec_quantize(dec_raw(-6586003009908865675, 9), 9, Round::HalfEven)
+    assert_eq(r.to_text(), "-6586003009.908865675")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_quantize_00042() {
+    set r = dec_quantize(dec_raw(-25, 4), 1, Round::HalfDown)
+    assert_eq(r.to_text(), "0.0")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_quantize_00043() {
+    set caught = ""
+    sus {
+        set ignored = dec_quantize(dec_raw(105180659363, 2), 10, Round::HalfUp)
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PRECISION")
+}
+
+#[test]
+fun c_quantize_00044() {
+    set r = dec_quantize(dec_raw(131, 0), 0, Round::HalfEven)
+    assert_eq(r.to_text(), "131")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_quantize_00045() {
+    set r = dec_quantize(dec_raw(427540576922359862, 4), 0, Round::Down)
+    assert_eq(r.to_text(), "42754057692235")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_quantize_00046() {
+    set r = dec_quantize(dec_raw(422, 2), 2, Round::HalfDown)
+    assert_eq(r.to_text(), "4.22")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_quantize_00047() {
+    set r = dec_quantize(dec_raw(157695000, 4), 0, Round::Floor)
+    assert_eq(r.to_text(), "15769")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_quantize_00048() {
+    set r = dec_quantize(dec_raw(-919691265256, 9), 8, Round::HalfDown)
+    assert_eq(r.to_text(), "-919.69126526")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_quantize_00049() {
+    set r = dec_quantize(dec_raw(5365930000, 1), 1, Round::Floor)
+    assert_eq(r.to_text(), "536593000.0")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_quantize_00050() {
+    set r = dec_quantize(dec_raw(58011400, 2), 1, Round::Down)
+    assert_eq(r.to_text(), "580114.0")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_quantize_00051() {
+    set r = dec_quantize(dec_raw(906214287185, 0), 0, Round::Down)
+    assert_eq(r.to_text(), "906214287185")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_quantize_00052() {
+    set r = dec_quantize(dec_raw(993, 0), 2, Round::HalfUp)
+    assert_eq(r.to_text(), "993.00")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_quantize_00053() {
+    set r = dec_quantize(dec_raw(-214, 1), 0, Round::HalfUp)
+    assert_eq(r.to_text(), "-21")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_quantize_00054() {
+    set r = dec_quantize(dec_raw(742, 2), 2, Round::Up)
+    assert_eq(r.to_text(), "7.42")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_quantize_00055() {
+    set r = dec_quantize(dec_raw(359, 3), 1, Round::HalfDown)
+    assert_eq(r.to_text(), "0.4")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_quantize_00056() {
+    set r = dec_quantize(dec_raw(256163979756, 4), 6, Round::HalfUp)
+    assert_eq(r.to_text(), "25616397.975600")
+    assert_eq(r.scale_value(), 6)
+}
+
+#[test]
+fun c_quantize_00057() {
+    set r = dec_quantize(dec_raw(311, 3), 9, Round::HalfUp)
+    assert_eq(r.to_text(), "0.311000000")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_quantize_00058() {
+    set caught = ""
+    sus {
+        set ignored = dec_quantize(dec_raw(-283, 0), 10, Round::HalfEven)
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_PRECISION")
+}
+
+#[test]
+fun c_quantize_00059() {
+    set r = dec_quantize(dec_raw(455613915299758587, 8), 3, Round::Ceiling)
+    assert_eq(r.to_text(), "4556139152.998")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_sign_00000() {
+    assert_eq(dec_raw(0, 0).sign(), 0)
+}
+
+#[test]
+fun c_sign_00001() {
+    assert_eq(dec_raw(0, 7).sign(), 0)
+}
+
+#[test]
+fun c_sign_00002() {
+    assert_eq(dec_raw(-1, 9).sign(), -1)
+}
+
+#[test]
+fun c_sign_00003() {
+    assert_eq(dec_raw(1, 9).sign(), 1)
+}
+
+#[test]
+fun c_sign_00004() {
+    assert_eq(dec_raw(-9223372036854775807, 0).sign(), -1)
+}
+
+#[test]
+fun c_sign_00005() {
+    assert_eq(dec_raw(-611252153147, 2).sign(), -1)
+}
+
+#[test]
+fun c_sign_00006() {
+    assert_eq(dec_raw(385, 9).sign(), 1)
+}
+
+#[test]
+fun c_sign_00007() {
+    assert_eq(dec_raw(690540875332, 3).sign(), 1)
+}
+
+#[test]
+fun c_sign_00008() {
+    assert_eq(dec_raw(718, 0).sign(), 1)
+}
+
+#[test]
+fun c_sign_00009() {
+    assert_eq(dec_raw(4789780000, 4).sign(), 1)
+}
+
+#[test]
+fun c_sign_00010() {
+    assert_eq(dec_raw(-283343140962, 0).sign(), -1)
+}
+
+#[test]
+fun c_sign_00011() {
+    assert_eq(dec_raw(-302316416159, 1).sign(), -1)
+}
+
+#[test]
+fun c_sign_00012() {
+    assert_eq(dec_raw(157638392239, 2).sign(), 1)
+}
+
+#[test]
+fun c_sign_00013() {
+    assert_eq(dec_raw(-274528632165, 0).sign(), -1)
+}
+
+#[test]
+fun c_sign_00014() {
+    assert_eq(dec_raw(758254121624, 1).sign(), 1)
+}
+
+#[test]
+fun c_sign_00015() {
+    assert_eq(dec_raw(5512069109315663876, 2).sign(), 1)
+}
+
+#[test]
+fun c_sign_00016() {
+    assert_eq(dec_raw(-871428817028, 2).sign(), -1)
+}
+
+#[test]
+fun c_sign_00017() {
+    assert_eq(dec_raw(798268998279, 0).sign(), 1)
+}
+
+#[test]
+fun c_sign_00018() {
+    assert_eq(dec_raw(0, 8).sign(), 0)
+}
+
+#[test]
+fun c_sign_00019() {
+    assert_eq(dec_raw(335157008338, 2).sign(), 1)
+}
+
+#[test]
+fun c_sign_00020() {
+    assert_eq(dec_raw(-51055511997869736, 4).sign(), -1)
+}
+
+#[test]
+fun c_sign_00021() {
+    assert_eq(dec_raw(-1, 4).sign(), -1)
+}
+
+#[test]
+fun c_sign_00022() {
+    assert_eq(dec_raw(133, 2).sign(), 1)
+}
+
+#[test]
+fun c_sign_00023() {
+    assert_eq(dec_raw(770, 0).sign(), 1)
+}
+
+#[test]
+fun c_sign_00024() {
+    assert_eq(dec_raw(394, 8).sign(), 1)
+}
+
+#[test]
+fun c_sign_00025() {
+    assert_eq(dec_raw(-907, 9).sign(), -1)
+}
+
+#[test]
+fun c_sign_00026() {
+    assert_eq(dec_raw(382, 8).sign(), 1)
+}
+
+#[test]
+fun c_sign_00027() {
+    assert_eq(dec_raw(600, 2).sign(), 1)
+}
+
+#[test]
+fun c_sign_00028() {
+    assert_eq(dec_raw(-856, 3).sign(), -1)
+}
+
+#[test]
+fun c_sign_00029() {
+    assert_eq(dec_raw(522240298697, 8).sign(), 1)
+}
+
+#[test]
+fun c_sign_00030() {
+    assert_eq(dec_raw(303139266518, 2).sign(), 1)
+}
+
+#[test]
+fun c_sign_00031() {
+    assert_eq(dec_raw(286783257810, 2).sign(), 1)
+}
+
+#[test]
+fun c_sign_00032() {
+    assert_eq(dec_raw(423734000, 8).sign(), 1)
+}
+
+#[test]
+fun c_sign_00033() {
+    assert_eq(dec_raw(914985000, 1).sign(), 1)
+}
+
+#[test]
+fun c_sign_00034() {
+    assert_eq(dec_raw(275, 9).sign(), 1)
+}
+
+#[test]
+fun c_sign_00035() {
+    assert_eq(dec_raw(635604969662, 8).sign(), 1)
+}
+
+#[test]
+fun c_sign_00036() {
+    assert_eq(dec_raw(561, 2).sign(), 1)
+}
+
+#[test]
+fun c_sign_00037() {
+    assert_eq(dec_raw(-998601477064, 0).sign(), -1)
+}
+
+#[test]
+fun c_sign_00038() {
+    assert_eq(dec_raw(198, 0).sign(), 1)
+}
+
+#[test]
+fun c_sign_00039() {
+    assert_eq(dec_raw(-922, 9).sign(), -1)
+}
+
+#[test]
+fun c_sign_00040() {
+    assert_eq(dec_raw(903, 2).sign(), 1)
+}
+
+#[test]
+fun c_sign_00041() {
+    assert_eq(dec_raw(-425, 1).sign(), -1)
+}
+
+#[test]
+fun c_sign_00042() {
+    assert_eq(dec_raw(-200134827477, 4).sign(), -1)
+}
+
+#[test]
+fun c_sign_00043() {
+    assert_eq(dec_raw(0, 9).sign(), 0)
+}
+
+#[test]
+fun c_sign_00044() {
+    assert_eq(dec_raw(-970, 2).sign(), -1)
+}
+
+#[test]
+fun c_sign_00045() {
+    assert_eq(dec_raw(6583063475798559631, 4).sign(), 1)
+}
+
+#[test]
+fun c_sign_00046() {
+    assert_eq(dec_raw(-454444610094, 0).sign(), -1)
+}
+
+#[test]
+fun c_sign_00047() {
+    assert_eq(dec_raw(874, 2).sign(), 1)
+}
+
+#[test]
+fun c_sign_00048() {
+    assert_eq(dec_raw(423, 0).sign(), 1)
+}
+
+#[test]
+fun c_sign_00049() {
+    assert_eq(dec_raw(30644123985606862, 3).sign(), 1)
+}
+
+#[test]
+fun c_sign_00050() {
+    assert_eq(dec_raw(3585636739301941288, 8).sign(), 1)
+}
+
+#[test]
+fun c_sign_00051() {
+    assert_eq(dec_raw(1, 8).sign(), 1)
+}
+
+#[test]
+fun c_sign_00052() {
+    assert_eq(dec_raw(-136, 9).sign(), -1)
+}
+
+#[test]
+fun c_sign_00053() {
+    assert_eq(dec_raw(-697, 4).sign(), -1)
+}
+
+#[test]
+fun c_sign_00054() {
+    assert_eq(dec_raw(302629607741, 8).sign(), 1)
+}
+
+#[test]
+fun c_sign_00055() {
+    assert_eq(dec_raw(-845, 1).sign(), -1)
+}
+
+#[test]
+fun c_sign_00056() {
+    assert_eq(dec_raw(931570973598, 0).sign(), 1)
+}
+
+#[test]
+fun c_sign_00057() {
+    assert_eq(dec_raw(-135, 1).sign(), -1)
+}
+
+#[test]
+fun c_sign_00058() {
+    assert_eq(dec_raw(476, 4).sign(), 1)
+}
+
+#[test]
+fun c_sign_00059() {
+    assert_eq(dec_raw(6535017818245154397, 9).sign(), 1)
+}
+
+#[test]
+fun c_str_00000() {
+    assert_eq(dec_raw(0, 0).to_text(), "0")
+}
+
+#[test]
+fun c_str_00001() {
+    assert_eq(dec_raw(0, 3).to_text(), "0.000")
+}
+
+#[test]
+fun c_str_00002() {
+    assert_eq(dec_raw(5, 2).to_text(), "0.05")
+}
+
+#[test]
+fun c_str_00003() {
+    assert_eq(dec_raw(-5, 2).to_text(), "-0.05")
+}
+
+#[test]
+fun c_str_00004() {
+    assert_eq(dec_raw(12300, 4).to_text(), "1.2300")
+}
+
+#[test]
+fun c_str_00005() {
+    assert_eq(dec_raw(-999, 0).to_text(), "-999")
+}
+
+#[test]
+fun c_str_00006() {
+    assert_eq(dec_raw(1, 9).to_text(), "0.000000001")
+}
+
+#[test]
+fun c_str_00007() {
+    assert_eq(dec_raw(-1, 9).to_text(), "-0.000000001")
+}
+
+#[test]
+fun c_str_00008() {
+    assert_eq(dec_raw(9223372036854775807, 0).to_text(), "9223372036854775807")
+}
+
+#[test]
+fun c_str_00009() {
+    assert_eq(dec_raw(-9223372036854775807, 0).to_text(), "-9223372036854775807")
+}
+
+#[test]
+fun c_str_00010() {
+    assert_eq(dec_raw(100, 2).to_text(), "1.00")
+}
+
+#[test]
+fun c_str_00011() {
+    assert_eq(dec_raw(278, 0).to_text(), "278")
+}
+
+#[test]
+fun c_str_00012() {
+    assert_eq(dec_raw(0, 1).to_text(), "0.0")
+}
+
+#[test]
+fun c_str_00013() {
+    assert_eq(dec_raw(2537900000, 8).to_text(), "25.37900000")
+}
+
+#[test]
+fun c_str_00014() {
+    assert_eq(dec_raw(-471, 1).to_text(), "-47.1")
+}
+
+#[test]
+fun c_str_00015() {
+    assert_eq(dec_raw(-297, 4).to_text(), "-0.0297")
+}
+
+#[test]
+fun c_str_00016() {
+    assert_eq(dec_raw(25, 2).to_text(), "0.25")
+}
+
+#[test]
+fun c_str_00017() {
+    assert_eq(dec_raw(-150292201379, 9).to_text(), "-150.292201379")
+}
+
+#[test]
+fun c_str_00018() {
+    assert_eq(dec_raw(591893785083, 0).to_text(), "591893785083")
+}
+
+#[test]
+fun c_str_00019() {
+    assert_eq(dec_raw(2823386581, 3).to_text(), "2823386.581")
+}
+
+#[test]
+fun c_str_00020() {
+    assert_eq(dec_raw(58037544914604081, 2).to_text(), "580375449146040.81")
+}
+
+#[test]
+fun c_str_00021() {
+    assert_eq(dec_raw(79, 0).to_text(), "79")
+}
+
+#[test]
+fun c_str_00022() {
+    assert_eq(dec_raw(0, 0).to_text(), "0")
+}
+
+#[test]
+fun c_str_00023() {
+    assert_eq(dec_raw(167244451544, 9).to_text(), "167.244451544")
+}
+
+#[test]
+fun c_str_00024() {
+    assert_eq(dec_raw(-165260819558, 3).to_text(), "-165260819.558")
+}
+
+#[test]
+fun c_str_00025() {
+    assert_eq(dec_raw(88950095446940513, 3).to_text(), "88950095446940.513")
+}
+
+#[test]
+fun c_str_00026() {
+    assert_eq(dec_raw(-49, 0).to_text(), "-49")
+}
+
+#[test]
+fun c_str_00027() {
+    assert_eq(dec_raw(774, 8).to_text(), "0.00000774")
+}
+
+#[test]
+fun c_str_00028() {
+    assert_eq(dec_raw(440951120115, 1).to_text(), "44095112011.5")
+}
+
+#[test]
+fun c_str_00029() {
+    assert_eq(dec_raw(989, 1).to_text(), "98.9")
+}
+
+#[test]
+fun c_str_00030() {
+    assert_eq(dec_raw(-247967417842799156, 2).to_text(), "-2479674178427991.56")
+}
+
+#[test]
+fun c_str_00031() {
+    assert_eq(dec_raw(652122434413, 1).to_text(), "65212243441.3")
+}
+
+#[test]
+fun c_str_00032() {
+    assert_eq(dec_raw(166030298121, 0).to_text(), "166030298121")
+}
+
+#[test]
+fun c_str_00033() {
+    assert_eq(dec_raw(-699, 1).to_text(), "-69.9")
+}
+
+#[test]
+fun c_str_00034() {
+    assert_eq(dec_raw(48045000000, 2).to_text(), "480450000.00")
+}
+
+#[test]
+fun c_str_00035() {
+    assert_eq(dec_raw(-25, 8).to_text(), "-0.00000025")
+}
+
+#[test]
+fun c_str_00036() {
+    assert_eq(dec_raw(775, 1).to_text(), "77.5")
+}
+
+#[test]
+fun c_str_00037() {
+    assert_eq(dec_raw(578, 3).to_text(), "0.578")
+}
+
+#[test]
+fun c_str_00038() {
+    assert_eq(dec_raw(510213956903, 1).to_text(), "51021395690.3")
+}
+
+#[test]
+fun c_str_00039() {
+    assert_eq(dec_raw(554, 1).to_text(), "55.4")
+}
+
+#[test]
+fun c_str_00040() {
+    assert_eq(dec_raw(6276545997803188118, 9).to_text(), "6276545997.803188118")
+}
+
+#[test]
+fun c_str_00041() {
+    assert_eq(dec_raw(905, 9).to_text(), "0.000000905")
+}
+
+#[test]
+fun c_str_00042() {
+    assert_eq(dec_raw(906, 1).to_text(), "90.6")
+}
+
+#[test]
+fun c_str_00043() {
+    assert_eq(dec_raw(-314, 8).to_text(), "-0.00000314")
+}
+
+#[test]
+fun c_str_00044() {
+    assert_eq(dec_raw(-25, 0).to_text(), "-25")
+}
+
+#[test]
+fun c_str_00045() {
+    assert_eq(dec_raw(679763607547, 0).to_text(), "679763607547")
+}
+
+#[test]
+fun c_str_00046() {
+    assert_eq(dec_raw(-498, 0).to_text(), "-498")
+}
+
+#[test]
+fun c_str_00047() {
+    assert_eq(dec_raw(-269, 8).to_text(), "-0.00000269")
+}
+
+#[test]
+fun c_str_00048() {
+    assert_eq(dec_raw(446, 9).to_text(), "0.000000446")
+}
+
+#[test]
+fun c_str_00049() {
+    assert_eq(dec_raw(397279963163, 0).to_text(), "397279963163")
+}
+
+#[test]
+fun c_str_00050() {
+    assert_eq(dec_raw(-837, 8).to_text(), "-0.00000837")
+}
+
+#[test]
+fun c_str_00051() {
+    assert_eq(dec_raw(180990000, 4).to_text(), "18099.0000")
+}
+
+#[test]
+fun c_str_00052() {
+    assert_eq(dec_raw(-47568744138, 0).to_text(), "-47568744138")
+}
+
+#[test]
+fun c_str_00053() {
+    assert_eq(dec_raw(-449537285165, 3).to_text(), "-449537285.165")
+}
+
+#[test]
+fun c_str_00054() {
+    assert_eq(dec_raw(934, 9).to_text(), "0.000000934")
+}
+
+#[test]
+fun c_str_00055() {
+    assert_eq(dec_raw(598593067146, 4).to_text(), "59859306.7146")
+}
+
+#[test]
+fun c_str_00056() {
+    assert_eq(dec_raw(527, 8).to_text(), "0.00000527")
+}
+
+#[test]
+fun c_str_00057() {
+    assert_eq(dec_raw(-166020701514, 0).to_text(), "-166020701514")
+}
+
+#[test]
+fun c_str_00058() {
+    assert_eq(dec_raw(48093100, 9).to_text(), "0.048093100")
+}
+
+#[test]
+fun c_str_00059() {
+    assert_eq(dec_raw(947075279117, 1).to_text(), "94707527911.7")
+}
+
+#[test]
+fun c_sub_00000() {
+    set r = dec_sub(dec_raw(257027045364, 0), dec_raw(-293, 0))
+    assert_eq(r.to_text(), "257027045657")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_sub_00001() {
+    set r = dec_sub(dec_raw(431, 2), dec_raw(-676385844648406700, 2))
+    assert_eq(r.to_text(), "6763858446484071.31")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_sub_00002() {
+    set r = dec_sub(dec_raw(25, 2), dec_raw(-25, 2))
+    assert_eq(r.to_text(), "0.50")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_sub_00003() {
+    set r = dec_sub(dec_raw(0, 2), dec_raw(62261974693, 4))
+    assert_eq(r.to_text(), "-6226197.4693")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_sub_00004() {
+    set r = dec_sub(dec_raw(-887102167237, 2), dec_raw(-626298099128, 2))
+    assert_eq(r.to_text(), "-2608040681.09")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_sub_00005() {
+    set r = dec_sub(dec_raw(113, 2), dec_raw(693, 8))
+    assert_eq(r.to_text(), "1.12999307")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_sub_00006() {
+    set r = dec_sub(dec_raw(1, 4), dec_raw(-701768412284, 4))
+    assert_eq(r.to_text(), "70176841.2285")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_sub_00007() {
+    set r = dec_sub(dec_raw(980864122263, 1), dec_raw(712, 1))
+    assert_eq(r.to_text(), "98086412155.1")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_sub_00008() {
+    set r = dec_sub(dec_raw(191, 1), dec_raw(-65561306036, 0))
+    assert_eq(r.to_text(), "65561306055.1")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_sub_00009() {
+    set r = dec_sub(dec_raw(-144439410256, 0), dec_raw(-25, 0))
+    assert_eq(r.to_text(), "-144439410231")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_sub_00010() {
+    set r = dec_sub(dec_raw(758674319664, 8), dec_raw(215243482599691959, 8))
+    assert_eq(r.to_text(), "-2152427239.25372295")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_sub_00011() {
+    set r = dec_sub(dec_raw(-832, 2), dec_raw(615090000, 0))
+    assert_eq(r.to_text(), "-615090008.32")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_sub_00012() {
+    set r = dec_sub(dec_raw(545558430815, 3), dec_raw(5996209674401947071, 3))
+    assert_eq(r.to_text(), "-5996209128843516.256")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_sub_00013() {
+    set r = dec_sub(dec_raw(878030475637834058, 1), dec_raw(-609509256294334380, 1))
+    assert_eq(r.to_text(), "148753973193216843.8")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_sub_00014() {
+    set r = dec_sub(dec_raw(8997100, 2), dec_raw(874672417346, 0))
+    assert_eq(r.to_text(), "-874672327375.00")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_sub_00015() {
+    set r = dec_sub(dec_raw(3365339209535742806, 2), dec_raw(-14712327852232387, 2))
+    assert_eq(r.to_text(), "33800515373879751.93")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_sub_00016() {
+    set r = dec_sub(dec_raw(954, 3), dec_raw(0, 4))
+    assert_eq(r.to_text(), "0.9540")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_sub_00017() {
+    set r = dec_sub(dec_raw(494023000, 4), dec_raw(671503952962, 4))
+    assert_eq(r.to_text(), "-67100992.9962")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_sub_00018() {
+    set r = dec_sub(dec_raw(-79, 0), dec_raw(296132248012, 0))
+    assert_eq(r.to_text(), "-296132248091")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_sub_00019() {
+    set r = dec_sub(dec_raw(-5, 8), dec_raw(9616560000, 8))
+    assert_eq(r.to_text(), "-96.16560005")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_sub_00020() {
+    set r = dec_sub(dec_raw(-428725944965, 8), dec_raw(559098063715, 8))
+    assert_eq(r.to_text(), "-9878.24008680")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_sub_00021() {
+    set r = dec_sub(dec_raw(-706, 1), dec_raw(963, 1))
+    assert_eq(r.to_text(), "-166.9")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_sub_00022() {
+    set r = dec_sub(dec_raw(641, 0), dec_raw(625070807990, 3))
+    assert_eq(r.to_text(), "-625070166.990")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_sub_00023() {
+    set r = dec_sub(dec_raw(-206902814089, 8), dec_raw(197014017621, 4))
+    assert_eq(r.to_text(), "-19703470.79024089")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_sub_00024() {
+    set r = dec_sub(dec_raw(-417206062883, 2), dec_raw(321776558798, 0))
+    assert_eq(r.to_text(), "-325948619426.83")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_sub_00025() {
+    set r = dec_sub(dec_raw(25, 8), dec_raw(710, 2))
+    assert_eq(r.to_text(), "-7.09999975")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_sub_00026() {
+    set caught = ""
+    sus {
+        set ignored = dec_sub(dec_raw(44433781721800666, 4), dec_raw(-73791675450518385, 8))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_sub_00027() {
+    set r = dec_sub(dec_raw(2534691108570888471, 1), dec_raw(-164, 1))
+    assert_eq(r.to_text(), "253469110857088863.5")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_sub_00028() {
+    set r = dec_sub(dec_raw(22886002487, 0), dec_raw(9037620, 0))
+    assert_eq(r.to_text(), "22876964867")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_sub_00029() {
+    set r = dec_sub(dec_raw(-737568460833, 4), dec_raw(580, 0))
+    assert_eq(r.to_text(), "-73757426.0833")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_sub_00030() {
+    set r = dec_sub(dec_raw(-285, 8), dec_raw(74536900, 8))
+    assert_eq(r.to_text(), "-0.74537185")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_sub_00031() {
+    set r = dec_sub(dec_raw(0, 1), dec_raw(70542800, 1))
+    assert_eq(r.to_text(), "-7054280.0")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_sub_00032() {
+    set r = dec_sub(dec_raw(-717, 2), dec_raw(102, 2))
+    assert_eq(r.to_text(), "-8.19")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_sub_00033() {
+    set r = dec_sub(dec_raw(0, 2), dec_raw(-872900953424, 3))
+    assert_eq(r.to_text(), "872900953.424")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_sub_00034() {
+    set r = dec_sub(dec_raw(155, 2), dec_raw(945392862084, 2))
+    assert_eq(r.to_text(), "-9453928619.29")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_sub_00035() {
+    set r = dec_sub(dec_raw(214, 1), dec_raw(66329460376, 1))
+    assert_eq(r.to_text(), "-6632946016.2")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_sub_00036() {
+    set r = dec_sub(dec_raw(997, 0), dec_raw(765946406128, 0))
+    assert_eq(r.to_text(), "-765946405131")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_sub_00037() {
+    set r = dec_sub(dec_raw(365876000000, 4), dec_raw(-25, 3))
+    assert_eq(r.to_text(), "36587600.0250")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_sub_00038() {
+    set r = dec_sub(dec_raw(0, 2), dec_raw(-928020711964, 2))
+    assert_eq(r.to_text(), "9280207119.64")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_sub_00039() {
+    set r = dec_sub(dec_raw(16, 8), dec_raw(998, 3))
+    assert_eq(r.to_text(), "-0.99799984")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_sub_00040() {
+    set r = dec_sub(dec_raw(820746029721, 9), dec_raw(-916, 0))
+    assert_eq(r.to_text(), "1736.746029721")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_sub_00041() {
+    set r = dec_sub(dec_raw(960699710549, 3), dec_raw(22262100000, 3))
+    assert_eq(r.to_text(), "938437610.549")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_sub_00042() {
+    set caught = ""
+    sus {
+        set ignored = dec_sub(dec_raw(-55, 1), dec_raw(7819316456359972099, 0))
+    } catch e: DecError {
+        rewrite caught = e.code
+    }
+    assert_eq(caught, "ERR_OVERFLOW")
+}
+
+#[test]
+fun c_sub_00043() {
+    set r = dec_sub(dec_raw(-110836699048, 8), dec_raw(1, 8))
+    assert_eq(r.to_text(), "-1108.36699049")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_sub_00044() {
+    set r = dec_sub(dec_raw(-632628875846, 2), dec_raw(146477320052, 8))
+    assert_eq(r.to_text(), "-6326290223.23320052")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_sub_00045() {
+    set r = dec_sub(dec_raw(-677, 2), dec_raw(462024894638, 2))
+    assert_eq(r.to_text(), "-4620248953.15")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_sub_00046() {
+    set r = dec_sub(dec_raw(954, 4), dec_raw(412444418737, 4))
+    assert_eq(r.to_text(), "-41244441.7783")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_sub_00047() {
+    set r = dec_sub(dec_raw(0, 0), dec_raw(-74, 1))
+    assert_eq(r.to_text(), "7.4")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_sub_00048() {
+    set r = dec_sub(dec_raw(-361524163069, 2), dec_raw(-872, 2))
+    assert_eq(r.to_text(), "-3615241621.97")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_sub_00049() {
+    set r = dec_sub(dec_raw(293363112200, 0), dec_raw(-1, 0))
+    assert_eq(r.to_text(), "293363112201")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_sub_00050() {
+    set r = dec_sub(dec_raw(-481, 8), dec_raw(5396360000, 2))
+    assert_eq(r.to_text(), "-53963600.00000481")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_sub_00051() {
+    set r = dec_sub(dec_raw(89859806469884594, 3), dec_raw(913, 4))
+    assert_eq(r.to_text(), "89859806469884.5027")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_sub_00052() {
+    set r = dec_sub(dec_raw(-603, 4), dec_raw(904, 3))
+    assert_eq(r.to_text(), "-0.9643")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_sub_00053() {
+    set r = dec_sub(dec_raw(-165552009278, 4), dec_raw(0, 4))
+    assert_eq(r.to_text(), "-16555200.9278")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_sub_00054() {
+    set r = dec_sub(dec_raw(-28118573827, 0), dec_raw(0, 3))
+    assert_eq(r.to_text(), "-28118573827.000")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_sub_00055() {
+    set r = dec_sub(dec_raw(17, 9), dec_raw(8981830, 9))
+    assert_eq(r.to_text(), "-0.008981813")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_sub_00056() {
+    set r = dec_sub(dec_raw(91418106294864740, 2), dec_raw(-31929018382774184, 2))
+    assert_eq(r.to_text(), "1233471246776389.24")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_sub_00057() {
+    set r = dec_sub(dec_raw(-690442206224, 9), dec_raw(1211370000, 9))
+    assert_eq(r.to_text(), "-691.653576224")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_sub_00058() {
+    set r = dec_sub(dec_raw(5, 9), dec_raw(-877097076504, 2))
+    assert_eq(r.to_text(), "8770970765.040000005")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_sub_00059() {
+    set r = dec_sub(dec_raw(417, 3), dec_raw(-3710567885510476084, 9))
+    assert_eq(r.to_text(), "3710567885.927476084")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_sub_fit_00000() {
+    set r = dec_sub_fit(dec_raw(292462077203, 2), dec_raw(2914635044026377645, 2), Round::Floor)
+    assert_eq(r.to_text(), "-29146347515643004.42")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_sub_fit_00001() {
+    set r = dec_sub_fit(dec_raw(903, 3), dec_raw(-427, 3), Round::HalfEven)
+    assert_eq(r.to_text(), "1.330")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_sub_fit_00002() {
+    set r = dec_sub_fit(dec_raw(-8870116163151992159, 9), dec_raw(-1, 2), Round::Floor)
+    assert_eq(r.to_text(), "-8870116163.141992159")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_sub_fit_00003() {
+    set r = dec_sub_fit(dec_raw(455, 0), dec_raw(0, 2), Round::Up)
+    assert_eq(r.to_text(), "455.00")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_sub_fit_00004() {
+    set r = dec_sub_fit(dec_raw(-557693001166, 3), dec_raw(644798396055, 8), Round::Ceiling)
+    assert_eq(r.to_text(), "-557699449.14996055")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_sub_fit_00005() {
+    set r = dec_sub_fit(dec_raw(-168052774810, 2), dec_raw(-993, 2), Round::Floor)
+    assert_eq(r.to_text(), "-1680527738.17")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_sub_fit_00006() {
+    set r = dec_sub_fit(dec_raw(-442, 1), dec_raw(-590993081839, 9), Round::HalfUp)
+    assert_eq(r.to_text(), "546.793081839")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_sub_fit_00007() {
+    set r = dec_sub_fit(dec_raw(6591380000, 2), dec_raw(355190092524, 2), Round::Floor)
+    assert_eq(r.to_text(), "-3485987125.24")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_sub_fit_00008() {
+    set r = dec_sub_fit(dec_raw(-519, 8), dec_raw(2122058209423101549, 8), Round::Floor)
+    assert_eq(r.to_text(), "-21220582094.23102068")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_sub_fit_00009() {
+    set r = dec_sub_fit(dec_raw(-763990356027, 1), dec_raw(-416514228327546543, 8), Round::HalfUp)
+    assert_eq(r.to_text(), "-72233893319.42453457")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_sub_fit_00010() {
+    set r = dec_sub_fit(dec_raw(0, 2), dec_raw(6303300, 8), Round::Down)
+    assert_eq(r.to_text(), "-0.06303300")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_sub_fit_00011() {
+    set r = dec_sub_fit(dec_raw(5, 0), dec_raw(-742452037583, 4), Round::Down)
+    assert_eq(r.to_text(), "74245208.7583")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_sub_fit_00012() {
+    set r = dec_sub_fit(dec_raw(-7254341688202139093, 0), dec_raw(-17, 0), Round::HalfEven)
+    assert_eq(r.to_text(), "-7254341688202139076")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_sub_fit_00013() {
+    set r = dec_sub_fit(dec_raw(396, 3), dec_raw(0, 2), Round::Up)
+    assert_eq(r.to_text(), "0.396")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_sub_fit_00016() {
+    set r = dec_sub_fit(dec_raw(78757643644298877, 0), dec_raw(-731627715313, 0), Round::HalfDown)
+    assert_eq(r.to_text(), "78758375272014190")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_sub_fit_00017() {
+    set r = dec_sub_fit(dec_raw(-294364883997, 0), dec_raw(259, 3), Round::HalfDown)
+    assert_eq(r.to_text(), "-294364883997.259")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_sub_fit_00018() {
+    set r = dec_sub_fit(dec_raw(238233823633, 0), dec_raw(361324097881, 0), Round::HalfDown)
+    assert_eq(r.to_text(), "-123090274248")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_sub_fit_00019() {
+    set r = dec_sub_fit(dec_raw(379445013790, 2), dec_raw(4160310, 2), Round::Ceiling)
+    assert_eq(r.to_text(), "3794408534.80")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_sub_fit_00020() {
+    set r = dec_sub_fit(dec_raw(-6361563126765885546, 3), dec_raw(-589, 1), Round::Ceiling)
+    assert_eq(r.to_text(), "-6361563126765826.646")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_sub_fit_00021() {
+    set r = dec_sub_fit(dec_raw(-93, 9), dec_raw(-894, 9), Round::Ceiling)
+    assert_eq(r.to_text(), "0.000000801")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_sub_fit_00022() {
+    set r = dec_sub_fit(dec_raw(3805407743286384016, 4), dec_raw(34541321621471605, 3), Round::HalfDown)
+    assert_eq(r.to_text(), "345999452707166.7966")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_sub_fit_00023() {
+    set r = dec_sub_fit(dec_raw(704756819332, 3), dec_raw(-1, 1), Round::Down)
+    assert_eq(r.to_text(), "704756819.432")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_sub_fit_00024() {
+    set r = dec_sub_fit(dec_raw(-289, 1), dec_raw(-771, 1), Round::Down)
+    assert_eq(r.to_text(), "48.2")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_sub_fit_00025() {
+    set r = dec_sub_fit(dec_raw(504670464573, 0), dec_raw(-32940958747717350, 0), Round::Up)
+    assert_eq(r.to_text(), "32941463418181923")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_sub_fit_00026() {
+    set r = dec_sub_fit(dec_raw(-912509855049, 2), dec_raw(-337, 2), Round::HalfEven)
+    assert_eq(r.to_text(), "-9125098547.12")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_sub_fit_00027() {
+    set r = dec_sub_fit(dec_raw(13180057586819558, 2), dec_raw(574211747955, 1), Round::Ceiling)
+    assert_eq(r.to_text(), "131743154693400.08")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_sub_fit_00029() {
+    set r = dec_sub_fit(dec_raw(360, 3), dec_raw(8660040000, 3), Round::HalfEven)
+    assert_eq(r.to_text(), "-8660039.640")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_sub_fit_00030() {
+    set r = dec_sub_fit(dec_raw(6125760000, 0), dec_raw(190105290691, 0), Round::HalfUp)
+    assert_eq(r.to_text(), "-183979530691")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_sub_fit_00031() {
+    set r = dec_sub_fit(dec_raw(481, 8), dec_raw(-5, 8), Round::Floor)
+    assert_eq(r.to_text(), "0.00000486")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_sub_fit_00032() {
+    set r = dec_sub_fit(dec_raw(-310599311156, 0), dec_raw(-341873946720483134, 2), Round::Up)
+    assert_eq(r.to_text(), "3418428867893675.34")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_sub_fit_00033() {
+    set r = dec_sub_fit(dec_raw(-366445204410, 2), dec_raw(0, 2), Round::Down)
+    assert_eq(r.to_text(), "-3664452044.10")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_sub_fit_00034() {
+    set r = dec_sub_fit(dec_raw(-336817154229, 0), dec_raw(-365, 0), Round::Down)
+    assert_eq(r.to_text(), "-336817153864")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_sub_fit_00035() {
+    set r = dec_sub_fit(dec_raw(541982000, 1), dec_raw(87592700000, 2), Round::HalfUp)
+    assert_eq(r.to_text(), "-821728800.00")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_sub_fit_00036() {
+    set r = dec_sub_fit(dec_raw(857980370142, 0), dec_raw(859504754601, 0), Round::HalfEven)
+    assert_eq(r.to_text(), "-1524384459")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_sub_fit_00037() {
+    set r = dec_sub_fit(dec_raw(-870786436571, 0), dec_raw(-812802672560, 0), Round::HalfDown)
+    assert_eq(r.to_text(), "-57983764011")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_sub_fit_00038() {
+    set r = dec_sub_fit(dec_raw(-976549598522, 2), dec_raw(965724639015, 2), Round::HalfUp)
+    assert_eq(r.to_text(), "-19422742375.37")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_sub_fit_00039() {
+    set r = dec_sub_fit(dec_raw(336, 3), dec_raw(-926, 3), Round::HalfUp)
+    assert_eq(r.to_text(), "1.262")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_sub_fit_00040() {
+    set r = dec_sub_fit(dec_raw(8901050000, 2), dec_raw(-5, 0), Round::HalfUp)
+    assert_eq(r.to_text(), "89010505.00")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_sub_fit_00041() {
+    set r = dec_sub_fit(dec_raw(-8745080787690956347, 1), dec_raw(-113492980405943465, 1), Round::HalfDown)
+    assert_eq(r.to_text(), "-863158780728501288.2")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_sub_fit_00042() {
+    set r = dec_sub_fit(dec_raw(255012247674, 0), dec_raw(736565730485, 0), Round::Down)
+    assert_eq(r.to_text(), "-481553482811")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_sub_fit_00043() {
+    set r = dec_sub_fit(dec_raw(-14, 0), dec_raw(456888042292, 0), Round::HalfDown)
+    assert_eq(r.to_text(), "-456888042306")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_sub_fit_00044() {
+    set r = dec_sub_fit(dec_raw(-699, 9), dec_raw(612, 0), Round::HalfDown)
+    assert_eq(r.to_text(), "-612.000000699")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_sub_fit_00045() {
+    set r = dec_sub_fit(dec_raw(-5, 2), dec_raw(-875, 2), Round::Down)
+    assert_eq(r.to_text(), "8.70")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_sub_fit_00046() {
+    set r = dec_sub_fit(dec_raw(873, 0), dec_raw(-847, 0), Round::Floor)
+    assert_eq(r.to_text(), "1720")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_sub_fit_00047() {
+    set r = dec_sub_fit(dec_raw(-149076444007, 2), dec_raw(0, 2), Round::HalfUp)
+    assert_eq(r.to_text(), "-1490764440.07")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_sub_fit_00048() {
+    set r = dec_sub_fit(dec_raw(432, 9), dec_raw(52939958871563393, 9), Round::Up)
+    assert_eq(r.to_text(), "-52939958.871562961")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_sub_fit_00049() {
+    set r = dec_sub_fit(dec_raw(0, 3), dec_raw(-355077499071, 3), Round::HalfDown)
+    assert_eq(r.to_text(), "355077499.071")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_sub_fit_00050() {
+    set r = dec_sub_fit(dec_raw(-174, 0), dec_raw(-495, 0), Round::HalfDown)
+    assert_eq(r.to_text(), "321")
+    assert_eq(r.scale_value(), 0)
+}
+
+#[test]
+fun c_sub_fit_00051() {
+    set r = dec_sub_fit(dec_raw(356, 2), dec_raw(0, 2), Round::Ceiling)
+    assert_eq(r.to_text(), "3.56")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_sub_fit_00052() {
+    set r = dec_sub_fit(dec_raw(8644910, 8), dec_raw(57775725815462554, 8), Round::HalfDown)
+    assert_eq(r.to_text(), "-577757258.06817644")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_sub_fit_00053() {
+    set r = dec_sub_fit(dec_raw(-442, 3), dec_raw(510, 9), Round::HalfDown)
+    assert_eq(r.to_text(), "-0.442000510")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_sub_fit_00054() {
+    set r = dec_sub_fit(dec_raw(932, 0), dec_raw(741299400429, 1), Round::HalfDown)
+    assert_eq(r.to_text(), "-74129939110.9")
+    assert_eq(r.scale_value(), 1)
+}
+
+#[test]
+fun c_sub_fit_00055() {
+    set r = dec_sub_fit(dec_raw(294, 8), dec_raw(28467558395070044, 8), Round::HalfEven)
+    assert_eq(r.to_text(), "-284675583.95069750")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_sub_fit_00056() {
+    set r = dec_sub_fit(dec_raw(-871336903319, 9), dec_raw(562, 0), Round::Down)
+    assert_eq(r.to_text(), "-1433.336903319")
+    assert_eq(r.scale_value(), 9)
+}
+
+#[test]
+fun c_sub_fit_00057() {
+    set r = dec_sub_fit(dec_raw(35641460037968276, 2), dec_raw(617, 2), Round::HalfEven)
+    assert_eq(r.to_text(), "356414600379676.59")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_sub_fit_00058() {
+    set r = dec_sub_fit(dec_raw(-801, 0), dec_raw(-346378489406202222, 2), Round::Ceiling)
+    assert_eq(r.to_text(), "3463784894061221.22")
+    assert_eq(r.scale_value(), 2)
+}
+
+#[test]
+fun c_sub_fit_00059() {
+    set r = dec_sub_fit(dec_raw(-250687588651, 1), dec_raw(364, 3), Round::HalfEven)
+    assert_eq(r.to_text(), "-25068758865.464")
+    assert_eq(r.scale_value(), 3)
+}
+
+#[test]
+fun c_sub_fit_00060() {
+    set r = dec_sub_fit(dec_raw(7607670, 2), dec_raw(-295, 4), Round::Down)
+    assert_eq(r.to_text(), "76076.7295")
+    assert_eq(r.scale_value(), 4)
+}
+
+#[test]
+fun c_sub_fit_00061() {
+    set r = dec_sub_fit(dec_raw(787, 8), dec_raw(-824713644873, 8), Round::HalfUp)
+    assert_eq(r.to_text(), "8247.13645660")
+    assert_eq(r.scale_value(), 8)
+}
+
+#[test]
+fun c_sub_fit_00062() {
+    set r = dec_sub_fit(dec_raw(835, 2), dec_raw(-592461657083, 2), Round::Ceiling)
+    assert_eq(r.to_text(), "5924616579.18")
+    assert_eq(r.scale_value(), 2)
+}
+

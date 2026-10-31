@@ -1,0 +1,625 @@
+// std.decimal v1 — денежный десятичный тип для Yukino.
+//
+// Значение: coef × 10^(−scale), где coef — int64, scale — 0..9.
+// Никакого float, никакого GC: чистое значение + явные коды ошибок.
+//
+// ПОЧЕМУ int64, А НЕ int128:
+// в Yukino (0.1.0) типов шире int64 нет. 38-значный профиль требует
+// 128-битного коэффициента и записан в спеку как v2. Здесь — v1:
+// 19 значащих цифр, масштаб до 9 знаков, максимум |coef| = 9223372036854775807.
+//
+// ЧЕГО v1 НЕ УМЕЕТ (сознательно, с явной паникой вместо тихой ошибки):
+//   • mul/div, где промежуточный результат не влезает в int64 —
+//     паникуют ERR_OVERFLOW, а не округляют «как получится»;
+//   • масштаб больше 9 (ERR_PRECISION).
+// Обходить молча нельзя: денежная арифметика с тихой потерей разрядов хуже,
+// чем остановка с понятным кодом.
+
+public enum Round {
+    Down,       // к нулю
+    Up,         // от нуля
+    Ceiling,    // к +∞
+    Floor,      // к −∞
+    HalfUp,     // половина — от нуля
+    HalfDown,   // половина — к нулю
+    HalfEven    // половина — к чётному (banker's), режим по умолчанию
+}
+
+public struct DecError {
+    code: string,
+    message: string
+}
+
+static MAX_COEF: int64 = 9223372036854775807
+static MIN_COEF: int64 = -9223372036854775807
+static MAX_SCALE: int64 = 9
+static PRECISION: int64 = 19
+
+// ---------------------------------------------------------------- утилиты
+
+fun pow10(n: int64) -> int64 {
+    if n <= 0 { return 1 }
+    if n == 1 { return 10 }
+    if n == 2 { return 100 }
+    if n == 3 { return 1000 }
+    if n == 4 { return 10000 }
+    if n == 5 { return 100000 }
+    if n == 6 { return 1000000 }
+    if n == 7 { return 10000000 }
+    if n == 8 { return 100000000 }
+    if n == 9 { return 1000000000 }
+    if n == 10 { return 10000000000 }
+    if n == 11 { return 100000000000 }
+    if n == 12 { return 1000000000000 }
+    if n == 13 { return 10000000000000 }
+    if n == 14 { return 100000000000000 }
+    if n == 15 { return 1000000000000000 }
+    if n == 16 { return 10000000000000000 }
+    if n == 17 { return 100000000000000000 }
+    if n == 18 { return 1000000000000000000 }
+    return 0
+}
+
+// Степень десяти для выравнивания (не для масштаба): до 10^18.
+// Больше — значит произведение всё равно не влезет в int64.
+fun pow10_e(n: int64) -> int64 {
+    if n < 0 || n > 18 {
+        panic(DecError { code: "ERR_OVERFLOW", message: "порядок больше 10^18 не влезает в int64" })
+    }
+    return pow10(n)
+}
+
+fun pow10_checked(n: int64) -> int64 {
+    if n < 0 || n > MAX_SCALE {
+        panic(DecError { code: "ERR_PRECISION", message: "масштаб вне диапазона 0..9" })
+    }
+    return pow10(n)
+}
+
+// |v|. MIN_COEF = −MAX_COEF, а не −(2^63), поэтому переполнения нет.
+fun abs64(v: int64) -> int64 {
+    if v < 0 { return -v }
+    return v
+}
+
+fun sign64(v: int64) -> int64 {
+    if v > 0 { return 1 }
+    if v < 0 { return -1 }
+    return 0
+}
+
+fun digits(v: int64) -> int64 {
+    set a = abs64(v)
+    set n: int64 = 1
+    while a >= 10 {
+        rewrite a = a / 10
+        rewrite n = n + 1
+    }
+    return n
+}
+
+// a + b выйдет за пределы [MIN_COEF, MAX_COEF]?
+fun add_overflows(a: int64, b: int64) -> bool {
+    if b > 0 {
+        return a > MAX_COEF - b
+    }
+    if b < 0 {
+        return a < MIN_COEF - b
+    }
+    return false
+}
+
+// |a × b| > MAX_COEF? Проверка ДО умножения — int64 сам не сообщит о переполнении.
+fun mul_overflows(a: int64, b: int64) -> bool {
+    if a == 0 { return false }
+    if b == 0 { return false }
+    return abs64(a) > MAX_COEF / abs64(b)
+}
+
+// ---------------------------------------------------------------- класс
+
+public class Dec {
+    coef: int64
+    scale: int64
+
+    fun init(coef: int64, scale: int64) {
+        rewrite this.coef = coef
+        rewrite this.scale = scale
+    }
+
+    // Каноническая строка: без экспоненты, точка как разделитель,
+    // ровно scale знаков после точки.
+    public fun to_text() -> string {
+        set neg = this.coef < 0
+        set ds = cast(abs64(this.coef), "string")
+        set n = ds.len()
+        set body = ds
+        if this.scale > 0 {
+            if n <= this.scale {
+                set pad: int64 = this.scale - n + 1
+                set zeros = ""
+                for i in 0..pad {
+                    rewrite zeros = zeros + "0"
+                }
+                rewrite body = zeros + ds
+            }
+            set cut = body.len() - this.scale
+            rewrite body = body[0..cut] + "." + body[cut..body.len()]
+        }
+        if neg {
+            return "-" + body
+        }
+        return body
+    }
+
+    public fun negate() -> Dec {
+        return init Dec(-this.coef, this.scale)
+    }
+
+    public fun abs_value() -> Dec {
+        return init Dec(abs64(this.coef), this.scale)
+    }
+
+    public fun sign() -> int64 {
+        return sign64(this.coef)
+    }
+
+    // Доступ к полям без прямой видимости: тесты и внешний код
+    // не должны зависеть от того, публичны ли поля класса.
+    public fun coef_value() -> int64 {
+        return this.coef
+    }
+
+    public fun scale_value() -> int64 {
+        return this.scale
+    }
+
+    public fun is_zero() -> bool {
+        return this.coef == 0
+    }
+
+    // Убрать хвостовые нули. 1.2300 → 1.23, 0.000 → 0.
+    public fun normalize() -> Dec {
+        if this.coef == 0 { return init Dec(0, 0) }
+        set c = this.coef
+        set s = this.scale
+        while s > 0 && c % 10 == 0 {
+            rewrite c = c / 10
+            rewrite s = s - 1
+        }
+        return init Dec(c, s)
+    }
+
+    // Привести к масштабу scale (увеличение — дописыванием нулей,
+    // уменьшение — округлением по mode).
+    public fun quantize(scale: int64, mode: Round) -> Dec {
+        return dec_quantize(this, scale, mode)
+    }
+
+    // Точное числовое сравнение без округления: −1 / 0 / 1.
+    public fun compare(other: Dec) -> int64 {
+        return dec_compare(this, other)
+    }
+
+    operator +(other: Dec) -> Dec {
+        return dec_add(this, other)
+    }
+
+    operator -(other: Dec) -> Dec {
+        return dec_sub(this, other)
+    }
+
+    operator *(other: Dec) -> Dec {
+        return dec_mul(this, other)
+    }
+
+    operator /(other: Dec) -> Dec {
+        return dec_div(this, other, Round::HalfEven)
+    }
+
+    operator ==(other: Dec) -> bool {
+        return dec_compare(this, other) == 0
+    }
+
+    operator <(other: Dec) -> bool {
+        return dec_compare(this, other) < 0
+    }
+
+    operator >(other: Dec) -> bool {
+        return dec_compare(this, other) > 0
+    }
+}
+
+// ---------------------------------------------------------------- внутреннее
+
+// Умножить коэффициент на 10^k при выравнивании масштабов.
+fun rescale_coef(d: Dec, target_scale: int64) -> int64 {
+    set k = target_scale - d.scale
+    if k <= 0 { return d.coef }
+    set p = pow10_checked(k)
+    if mul_overflows(d.coef, p) {
+        panic(DecError { code: "ERR_OVERFLOW", message: "выравнивание масштабов не влезает в int64" })
+    }
+    return d.coef * p
+}
+
+// coef / 10^k с округлением по mode.
+// Деление в Yukino усекает к нулю, остаток сохраняет знак делимого —
+// отсюда q*p + r == coef и вся арифметика ниже без переполнений.
+fun round_div_pow10(coef: int64, k: int64, mode: Round) -> int64 {
+    if k <= 0 { return coef }
+    set p = pow10_checked(k)
+    set q = coef / p
+    set r = coef % p
+    if r == 0 { return q }
+
+    set dir: int64 = 1
+    if coef < 0 { rewrite dir = -1 }
+
+    set a = abs64(r)
+    set rest = p - a          // p>a всегда, переполнения нет
+
+    // Down / Up / Ceiling / Floor решаются знаком, остальные — сравнением с половиной.
+    if mode == Round::Down { return q }
+    if mode == Round::Up { return q + dir }
+    if mode == Round::Ceiling {
+        if coef > 0 { return q + 1 }
+        return q
+    }
+    if mode == Round::Floor {
+        if coef < 0 { return q - 1 }
+        return q
+    }
+    if a > rest { return q + dir }
+    if a < rest { return q }
+    // ровно половина
+    if mode == Round::HalfUp { return q + dir }
+    if mode == Round::HalfDown { return q }
+    // HalfEven: к чётному
+    if q % 2 == 0 { return q }
+    return q + dir
+}
+
+// Ужать масштаб до MAX_SCALE (коэффициент в int64 уже не переполнить).
+fun fit(coef: int64, scale: int64, mode: Round) -> Dec {
+    set c = coef
+    set s = scale
+    while s > MAX_SCALE {
+        set k = s - MAX_SCALE
+        rewrite c = round_div_pow10(c, k, mode)
+        rewrite s = MAX_SCALE
+    }
+    return init Dec(c, s)
+}
+
+// ---------------------------------------------------------------- операции
+
+// Конструктор из «сырых» (coef, scale) — для таблиц тестов и сериализации.
+// Инварианты проверяются: масштаб 0..9, коэффициент в пределах int64.
+public fun dec_raw(coef: int64, scale: int64) -> Dec {
+    if scale < 0 || scale > MAX_SCALE {
+        panic(DecError { code: "ERR_PRECISION", message: "масштаб вне 0..9" })
+    }
+    if coef > MAX_COEF || coef < MIN_COEF {
+        panic(DecError { code: "ERR_OVERFLOW", message: "коэффициент вне int64" })
+    }
+    return init Dec(coef, scale)
+}
+
+public fun dec_from_int(v: int64) -> Dec {
+    if v > MAX_COEF || v < MIN_COEF {
+        panic(DecError { code: "ERR_OVERFLOW", message: "int64 вне диапазона Dec" })
+    }
+    return init Dec(v, 0)
+}
+
+public fun dec_add(a: Dec, b: Dec) -> Dec {
+    set s: int64 = a.scale
+    if b.scale > s { rewrite s = b.scale }
+    set ac = rescale_coef(a, s)
+    set bc = rescale_coef(b, s)
+    if add_overflows(ac, bc) {
+        panic(DecError { code: "ERR_OVERFLOW", message: "сумма не влезает в int64" })
+    }
+    return init Dec(ac + bc, s)
+}
+
+public fun dec_sub(a: Dec, b: Dec) -> Dec {
+    return dec_add(a, b.negate())
+}
+
+// Сложение с подгонкой масштаба: если точная сумма не влезает — округляем.
+public fun dec_add_fit(a: Dec, b: Dec, mode: Round) -> Dec {
+    set s: int64 = a.scale
+    if b.scale > s { rewrite s = b.scale }
+    set ac = rescale_coef(a, s)
+    set bc = rescale_coef(b, s)
+    if !add_overflows(ac, bc) {
+        return init Dec(ac + bc, s)
+    }
+    // Точная сумма не влезает: ужимаем оба слагаемых до меньшего масштаба.
+    set k = s - MAX_SCALE
+    if k <= 0 {
+        panic(DecError { code: "ERR_OVERFLOW", message: "сумма не влезает даже при масштабе 9" })
+    }
+    set ca = round_div_pow10(ac, k, mode)
+    set cb = round_div_pow10(bc, k, mode)
+    if add_overflows(ca, cb) {
+        panic(DecError { code: "ERR_OVERFLOW", message: "сумма не влезает даже при масштабе 9" })
+    }
+    return init Dec(ca + cb, MAX_SCALE)
+}
+
+public fun dec_sub_fit(a: Dec, b: Dec, mode: Round) -> Dec {
+    return dec_add_fit(a, b.negate(), mode)
+}
+
+public fun dec_mul(a: Dec, b: Dec) -> Dec {
+    if mul_overflows(a.coef, b.coef) {
+        panic(DecError { code: "ERR_OVERFLOW", message: "произведение коэффициентов не влезает в int64 (нужен 128-битный бэкенд)" })
+    }
+    return fit(a.coef * b.coef, a.scale + b.scale, Round::HalfEven)
+}
+
+public fun dec_mul_with(a: Dec, b: Dec, mode: Round) -> Dec {
+    if mul_overflows(a.coef, b.coef) {
+        panic(DecError { code: "ERR_OVERFLOW", message: "произведение коэффициентов не влезает в int64 (нужен 128-битный бэкенд)" })
+    }
+    return fit(a.coef * b.coef, a.scale + b.scale, mode)
+}
+
+public fun dec_mul_exact(a: Dec, b: Dec) -> Dec {
+    set s = a.scale + b.scale
+    if s > MAX_SCALE {
+        panic(DecError { code: "ERR_PRECISION", message: "масштаб произведения больше 9" })
+    }
+    if mul_overflows(a.coef, b.coef) {
+        panic(DecError { code: "ERR_OVERFLOW", message: "произведение коэффициентов не влезает в int64" })
+    }
+    return init Dec(a.coef * b.coef, s)
+}
+
+// Деление. Масштаб результата выбирается консервативно:
+//   s = PRECISION − порядок(a/b) − 1, затем зажимается в 0..MAX_SCALE.
+// Так коэффициент гарантированно остаётся в int64, а результат имеет
+// не больше 19 значащих цифр.
+public fun dec_div(a: Dec, b: Dec, mode: Round) -> Dec {
+    if b.coef == 0 {
+        panic(DecError { code: "ERR_DIV_BY_ZERO", message: "деление на ноль" })
+    }
+    if a.coef == 0 {
+        return init Dec(0, 0)
+    }
+
+    set neg_res = (a.coef < 0) != (b.coef < 0)
+    set na = abs64(a.coef)
+    set nb = abs64(b.coef)
+
+    set order = digits(na) - digits(nb) + b.scale - a.scale
+    set st = PRECISION - order - 1
+    if st < 0 { rewrite st = 0 }
+    if st > MAX_SCALE { rewrite st = MAX_SCALE }
+
+    // a/b = (na / nb) × 10^(b.scale − a.scale)
+    //       = (na × 10^(b.scale + st)) / (nb × 10^a.scale)   — при масштабе st
+    set e = b.scale + st - a.scale
+    set num = na
+    set den = nb
+    if e >= 0 {
+        set p = pow10_e(e)
+        if mul_overflows(num, p) {
+            panic(DecError { code: "ERR_OVERFLOW", message: "числитель деления не влезает в int64 (нужен 128-битный бэкенд)" })
+        }
+        rewrite num = num * p
+    } else {
+        set p = pow10_e(-e)
+        if mul_overflows(den, p) {
+            panic(DecError { code: "ERR_OVERFLOW", message: "знаменатель деления не влезает в int64 (нужен 128-битный бэкенд)" })
+        }
+        rewrite den = den * p
+    }
+
+    set q = num / den
+    set r = num % den
+    if r != 0 {
+        // q — модуль результата, поэтому «от нуля» = q+1.
+        set a_r = abs64(r)
+        set rest = den - a_r
+        set bump: bool = false
+        if mode == Round::Down {
+            rewrite bump = false
+        } elif mode == Round::Up {
+            rewrite bump = true
+        } elif mode == Round::Ceiling {
+            rewrite bump = !neg_res
+        } elif mode == Round::Floor {
+            rewrite bump = neg_res
+        } elif a_r > rest {
+            rewrite bump = true
+        } elif a_r < rest {
+            rewrite bump = false
+        } elif mode == Round::HalfUp {
+            rewrite bump = true
+        } elif mode == Round::HalfDown {
+            rewrite bump = false
+        } else {
+            rewrite bump = q % 2 != 0
+        }
+        if bump { rewrite q = q + 1 }
+    }
+
+    if neg_res { rewrite q = -q }
+    return fit(q, st, mode)
+}
+
+public fun dec_quantize(d: Dec, scale: int64, mode: Round) -> Dec {
+    if scale < 0 || scale > MAX_SCALE {
+        panic(DecError { code: "ERR_PRECISION", message: "целевой масштаб вне 0..9" })
+    }
+    if scale >= d.scale {
+        set k = scale - d.scale
+        set p = pow10(k)
+        if mul_overflows(d.coef, p) {
+            panic(DecError { code: "ERR_OVERFLOW", message: "дописывание нулей не влезает в int64" })
+        }
+        return init Dec(d.coef * p, scale)
+    }
+    set c = round_div_pow10(d.coef, d.scale - scale, mode)
+    return init Dec(c, scale)
+}
+
+public fun dec_compare(a: Dec, b: Dec) -> int64 {
+    set s: int64 = a.scale
+    if b.scale > s { rewrite s = b.scale }
+    set ac = rescale_coef(a, s)
+    set bc = rescale_coef(b, s)
+    if ac < bc { return -1 }
+    if ac > bc { return 1 }
+    return 0
+}
+
+// ---------------------------------------------------------------- парсинг
+
+// Разбирает литерал: [+-]? digits [ . digits ] [ (e|E) [+-]? digits ]
+// Разделитель — только точка. Пробелы, '_', ',' и NaN/Inf запрещены.
+// Масштаб сохраняется как записан: "1.2300" → coef 12300, scale 4.
+public fun dec_parse(s: string) -> Dec {
+    set n = s.len()
+    if n == 0 {
+        panic(DecError { code: "ERR_PARSE", message: "пустая строка" })
+    }
+
+    set i: int64 = 0
+    set neg = false
+    set c0 = cast(s[0], "int64")
+    if c0 == 43 {
+        rewrite i = 1
+    } elif c0 == 45 {
+        rewrite neg = true
+        rewrite i = 1
+    }
+
+    // --- проход 1: синтаксис и счётчики (без арифметики над коэффициентом)
+    set int_len: int64 = 0
+    while i < n {
+        set c = cast(s[i], "int64")
+        if c < 48 || c > 57 { break }
+        rewrite int_len = int_len + 1
+        rewrite i = i + 1
+    }
+    if int_len == 0 {
+        panic(DecError { code: "ERR_PARSE", message: "нет цифр до точки" })
+    }
+
+    set frac_len: int64 = 0
+    if i < n {
+        if cast(s[i], "int64") == 46 {          // '.'
+            rewrite i = i + 1
+            while i < n {
+                set c = cast(s[i], "int64")
+                if c < 48 || c > 57 { break }
+                rewrite frac_len = frac_len + 1
+                rewrite i = i + 1
+            }
+            if frac_len == 0 {
+                panic(DecError { code: "ERR_PARSE", message: "нет цифр после точки" })
+            }
+        }
+    }
+
+    // здесь i указывает на первый символ после мантиссы
+    set mant_end: int64 = i
+
+    set exp: int64 = 0
+    if i < n {
+        set ce = cast(s[i], "int64")
+        if ce == 101 || ce == 69 {              // 'e' | 'E'
+            rewrite i = i + 1
+            set eneg = false
+            if i < n {
+                set sc = cast(s[i], "int64")
+                if sc == 43 {
+                    rewrite i = i + 1
+                } elif sc == 45 {
+                    rewrite eneg = true
+                    rewrite i = i + 1
+                }
+            }
+            set ed: int64 = 0
+            while i < n {
+                set ec = cast(s[i], "int64")
+                if ec < 48 || ec > 57 { break }
+                if exp > 1000000 {
+                    panic(DecError { code: "ERR_OVERFLOW", message: "показатель степени слишком велик" })
+                }
+                rewrite exp = exp * 10 + (ec - 48)
+                rewrite ed = ed + 1
+                rewrite i = i + 1
+            }
+            if ed == 0 {
+                panic(DecError { code: "ERR_PARSE", message: "пустой показатель степени" })
+            }
+            if eneg { rewrite exp = -exp }
+        }
+    }
+    if i < n {
+        panic(DecError { code: "ERR_PARSE", message: "недопустимый символ" })
+    }
+
+    // масштаб = цифры после точки минус показатель степени
+    set scale = frac_len - exp
+    set shift: int64 = 0
+    if scale < 0 {
+        rewrite shift = -scale
+        rewrite scale = 0
+    }
+    if scale > MAX_SCALE {
+        panic(DecError { code: "ERR_PRECISION", message: "больше 9 знаков после точки" })
+    }
+
+    // --- проход 2: коэффициент (проверки переполнения на каждом шаге)
+    set coef: int64 = 0
+    set j: int64 = 0
+    if n > 0 {
+        set cj = cast(s[0], "int64")
+        if cj == 43 || cj == 45 {
+            rewrite j = 1
+        }
+    }
+    while j < mant_end {
+        set c = cast(s[j], "int64")
+        if c >= 48 && c <= 57 {
+            set d = c - 48
+            if mul_overflows(coef, 10) {
+                panic(DecError { code: "ERR_OVERFLOW", message: "слишком много цифр в коэффициенте" })
+            }
+            if add_overflows(coef * 10, d) {
+                panic(DecError { code: "ERR_OVERFLOW", message: "слишком много цифр в коэффициенте" })
+            }
+            rewrite coef = coef * 10 + d
+        }
+        rewrite j = j + 1
+    }
+
+    if shift > 0 {
+        set p = pow10_e(shift)
+        if mul_overflows(coef, p) {
+            panic(DecError { code: "ERR_OVERFLOW", message: "значение не влезает в int64" })
+        }
+        rewrite coef = coef * p
+    }
+    if neg { rewrite coef = -coef }
+    if coef > MAX_COEF || coef < MIN_COEF {
+        panic(DecError { code: "ERR_OVERFLOW", message: "коэффициент вне int64" })
+    }
+    return init Dec(coef, scale)
+}
+
+// Мягкий вариант: null вместо паники на синтаксической ошибке.
+public fun dec_try_parse(s: string) -> Dec? {
+    sus {
+        return dec_parse(s)
+    } catch e: DecError {
+        return null
+    }
+}
